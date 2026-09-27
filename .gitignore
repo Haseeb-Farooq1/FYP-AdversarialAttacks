@@ -1,1 +1,7 @@
 Network_dataset_1.csv
+*.csv
+.venv/
+__pycache__/
+*.py[cod]
+~$*
+
