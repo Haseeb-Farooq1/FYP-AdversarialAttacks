@@ -5,3 +5,9 @@ __pycache__/
 *.py[cod]
 ~$*
 
+# Zainab's generated datasets and local split assignments
+/dataset/processed_zainab/
+
+/reports/zainab_preprocessing_report.md
+/reports/zainab_preprocessing_report.pdf
+

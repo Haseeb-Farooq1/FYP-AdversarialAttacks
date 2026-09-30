@@ -1,0 +1,204 @@
+{
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "numerical_columns": [
+    "src_port",
+    "dst_port",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "categorical_columns": [
+    "proto",
+    "service",
+    "conn_state",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "http_status_code"
+  ],
+  "boolean_columns": [
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected"
+  ],
+  "category_codes": {
+    "missing": 0,
+    "unknown": 1,
+    "known_start": 2
+  },
+  "category_mappings": {
+    "proto": {
+      "icmp": 2,
+      "tcp": 3,
+      "udp": 4
+    },
+    "service": {
+      "dce_rpc": 2,
+      "dhcp": 3,
+      "dns": 4,
+      "ftp": 5,
+      "ftp-data": 6,
+      "gssapi": 7,
+      "gssapi;ntlm;smb": 8,
+      "http": 9,
+      "ntlm;smb;dce_rpc;gssapi": 10,
+      "ntlm;smb;gssapi": 11,
+      "smb": 12,
+      "smb;gssapi": 13,
+      "smb;ntlm;gssapi": 14,
+      "ssl": 15
+    },
+    "conn_state": {
+      "OTH": 2,
+      "REJ": 3,
+      "RSTO": 4,
+      "RSTOS0": 5,
+      "RSTR": 6,
+      "RSTRH": 7,
+      "S0": 8,
+      "S1": 9,
+      "S2": 10,
+      "S3": 11,
+      "SF": 12,
+      "SH": 13,
+      "SHR": 14
+    },
+    "dns_qclass": {
+      "0": 2,
+      "1": 3,
+      "32769": 4
+    },
+    "dns_qtype": {
+      "0": 2,
+      "1": 3,
+      "12": 4,
+      "16": 5,
+      "2": 6,
+      "255": 7,
+      "28": 8,
+      "32": 9,
+      "33": 10,
+      "43": 11,
+      "48": 12,
+      "6": 13
+    },
+    "dns_rcode": {
+      "0": 2,
+      "1": 3,
+      "2": 4,
+      "3": 5,
+      "5": 6
+    },
+    "http_status_code": {
+      "0": 2,
+      "200": 3,
+      "301": 4,
+      "302": 5,
+      "400": 6,
+      "403": 7,
+      "404": 8
+    }
+  },
+  "boolean_mapping": {
+    "F": 0,
+    "T": 1,
+    "missing": 2
+  },
+  "numeric_imputation_means": {
+    "src_port": 45973.951397141194,
+    "dst_port": 1783.3947913499865,
+    "duration": 10.196954236349441,
+    "src_bytes": 715862.8816731765,
+    "dst_bytes": 931106.9899234019,
+    "missed_bytes": 66538.44608029502,
+    "src_pkts": 7.143117081493725,
+    "src_ip_bytes": 907.5337144500352,
+    "dst_pkts": 5.796855122392818,
+    "dst_ip_bytes": 1058.7387050400569,
+    "http_request_body_len": 0.010990439930850013,
+    "http_response_body_len": 1.0488545878348396
+  },
+  "standard_scaler": {
+    "mean": [
+      45973.9513971412,
+      1783.3947913499862,
+      10.19695423634944,
+      715862.8816731768,
+      931106.9899234013,
+      66538.44608029502,
+      7.143117081493726,
+      907.5337144500352,
+      5.796855122392818,
+      1058.7387050400569,
+      0.010990439930850013,
+      1.0488545878348396
+    ],
+    "scale": [
+      12123.490296675223,
+      7608.186399272498,
+      124.74712295269939,
+      16700025.431484768,
+      36849453.93963035,
+      5692999.505387598,
+      1840.8967853228585,
+      137984.11591699804,
+      1722.8671348578705,
+      111948.37205195018,
+      0.6763368562804282,
+      65.51845611420326
+    ],
+    "var": [
+      146979016.9735783,
+      57884500.286075026,
+      15561.844684975898,
+      278890849412238.0,
+      1357882255648939.0,
+      32410243368343.43,
+      3388900.9742120346,
+      19039616245.395554,
+      2968271.1643733676,
+      12532438005.081861,
+      0.45743154316329254,
+      4292.668091588779
+    ],
+    "training_rows": 4437311
+  },
+  "categorical_warning": "Category/Boolean codes are discrete, not continuous measurements; never scale or continuously perturb them.",
+  "log1p": false,
+  "class_weights": {
+    "0": 7.927620201240603,
+    "1": 0.5336581560751105
+  }
+}

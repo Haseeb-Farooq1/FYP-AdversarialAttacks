@@ -1,0 +1,340 @@
+{
+  "input_files": [
+    {
+      "file": "Network_dataset_17.csv",
+      "rows": 1000000,
+      "columns": 46,
+      "size_bytes": 149859400,
+      "sha256": "d933a39088804258386441d83e4dec29ad14b97378b2a216f9919b0f5180143a"
+    },
+    {
+      "file": "Network_dataset_18.csv",
+      "rows": 1000000,
+      "columns": 46,
+      "size_bytes": 150807171,
+      "sha256": "32d04d9cfefee40774e979c600ec322e2da6518bb6d8974999075007794c3934"
+    },
+    {
+      "file": "Network_dataset_19.csv",
+      "rows": 1000000,
+      "columns": 46,
+      "size_bytes": 156962122,
+      "sha256": "162203394dc41b3020bdc70b99e213f620fd66bacd333dbdf1cd5279adbd5f5d"
+    },
+    {
+      "file": "Network_dataset_20.csv",
+      "rows": 1000000,
+      "columns": 46,
+      "size_bytes": 157610648,
+      "sha256": "ca793a8ff6860c2a8b8e8b4bc72271bbbfc011b0b6c523765658949e1513fd0f"
+    },
+    {
+      "file": "Network_dataset_21.csv",
+      "rows": 1000000,
+      "columns": 46,
+      "size_bytes": 158679239,
+      "sha256": "63fe9f2c91c48c0f30721eda03864675e1d87103a36cd61c19a3ac68d8ac077b"
+    },
+    {
+      "file": "Network_dataset_22.csv",
+      "rows": 1000000,
+      "columns": 46,
+      "size_bytes": 153268181,
+      "sha256": "a1f6009f2be53bc1fba90f044d07ff5a9c5cfe4912b56690d8f02fb75aa335c0"
+    },
+    {
+      "file": "Network_dataset_23(in).csv",
+      "rows": 339021,
+      "columns": 46,
+      "size_bytes": 51705631,
+      "sha256": "8b1f13f87149ab423d15d6f76bfdf2c5cc454d68024fc7445dfcfaa499c94d8c"
+    }
+  ],
+  "original_rows": 6339021,
+  "final_rows": 6339021,
+  "original_columns": 46,
+  "original_feature_count": 44,
+  "final_model_feature_count": 23,
+  "output_columns": 25,
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "target": "label",
+  "reporting_only": "type",
+  "dropped_columns": {
+    "ts": "Timestamp: exclude collection context from the classifier.",
+    "src_ip": "Source identifier: avoid memorizing testbed addresses.",
+    "dst_ip": "Destination identifier: avoid memorizing testbed addresses.",
+    "dns_query": "Raw query vocabulary; omit text to keep the baseline compact.",
+    "ssl_version": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_cipher": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_resumed": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_established": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_subject": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_issuer": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "http_trans_depth": "Almost entirely missing; observed nonmissing value is 1.",
+    "http_version": "Almost entirely missing; observed nonmissing value is 1.1.",
+    "http_method": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_uri": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_referrer": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_user_agent": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_orig_mime_types": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_resp_mime_types": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "weird_name": "Over 99.99% missing in the initial inspection.",
+    "weird_addl": "Over 99.99% missing in the initial inspection.",
+    "weird_notice": "Over 99.99% missing in the initial inspection."
+  },
+  "missing_value_handling": {
+    "numerical": "Training means, then training-fitted StandardScaler; legitimate zeros preserved.",
+    "categorical": "Missing=0, unknown=1, training categories=2+; no scaling.",
+    "boolean": "F=0, T=1, missing=2; unexpected values rejected; no scaling.",
+    "invalid_src_bytes": "0.0.0.0 becomes missing numeric; rows retained."
+  },
+  "invalid_src_bytes_count": 694,
+  "invalid_src_bytes_by_file": {
+    "Network_dataset_17.csv": 0,
+    "Network_dataset_18.csv": 0,
+    "Network_dataset_19.csv": 0,
+    "Network_dataset_20.csv": 0,
+    "Network_dataset_21.csv": 0,
+    "Network_dataset_22.csv": 690,
+    "Network_dataset_23(in).csv": 4
+  },
+  "split": {
+    "seed": 42,
+    "stratified_by": "type",
+    "requested_ratios": [
+      0.7,
+      0.15,
+      0.15
+    ],
+    "rounding": "Floor train and validation counts per type; remainder to test.",
+    "assignments": "split_assignments.npy: 0=train, 1=validation, 2=test, in manifest row order."
+  },
+  "splits": {
+    "train": {
+      "rows": 4437311,
+      "label": {
+        "1": 4157447,
+        "0": 279864
+      },
+      "type": {
+        "ddos": 1070810,
+        "normal": 279864,
+        "password": 1202997,
+        "xss": 1476260,
+        "ransomware": 50963,
+        "backdoor": 355681,
+        "mitm": 736
+      },
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 481,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 1966961,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "unknown_categories": {
+        "proto": 0,
+        "service": 0,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 3927541,
+        "dns_RD": 3927541,
+        "dns_RA": 3927541,
+        "dns_rejected": 3927541
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0
+    },
+    "validation": {
+      "rows": 950850,
+      "label": {
+        "1": 890879,
+        "0": 59971
+      },
+      "type": {
+        "ddos": 229459,
+        "normal": 59971,
+        "password": 257785,
+        "xss": 316341,
+        "ransomware": 10920,
+        "backdoor": 76217,
+        "mitm": 157
+      },
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 103,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 421285,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "unknown_categories": {
+        "proto": 0,
+        "service": 0,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 841935,
+        "dns_RD": 841935,
+        "dns_RA": 841935,
+        "dns_rejected": 841935
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0
+    },
+    "test": {
+      "rows": 950860,
+      "label": {
+        "1": 890888,
+        "0": 59972
+      },
+      "type": {
+        "ddos": 229460,
+        "normal": 59972,
+        "password": 257786,
+        "xss": 316343,
+        "ransomware": 10922,
+        "backdoor": 76218,
+        "mitm": 159
+      },
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 110,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 421234,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "unknown_categories": {
+        "proto": 0,
+        "service": 1,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 841554,
+        "dns_RD": 841554,
+        "dns_RA": 841554,
+        "dns_rejected": 841554
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0
+    }
+  },
+  "training_binary_class_weights": {
+    "0": 7.927620201240603,
+    "1": 0.5336581560751105
+  },
+  "preprocessing_steps": [
+    "Verify schema and targets; construct seeded stratified split before learning.",
+    "Strip whitespace; normalize missing markers and explicitly convert numeric/Boolean values.",
+    "Keep 23 original predictors; exclude identifiers, sparse text and both targets from X.",
+    "Learn imputation means and complete category vocabularies using training rows only.",
+    "Fit StandardScaler on imputed training numerical columns only.",
+    "Apply frozen transforms to all splits; retain original class distributions.",
+    "Save config, split assignments, outputs and training binary class weights."
+  ],
+  "limitations": [
+    "Row-stratified split: duplicates and related flows can cross splits; no deduplication or group isolation.",
+    "Category codes have no numerical distance/order meaning. A later model must treat them as categorical (e.g. embeddings).",
+    "Ports remain numeric for this compact baseline; adversarial edits must respect discrete protocol semantics."
+  ],
+  "raw_sha256_unchanged": true,
+  "chunk_size": 50000,
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scikit_learn": "1.9.1"
+  },
+  "output_files": [
+    "C:\\Users\\Hp\\FYP-AdversarialAttacks\\dataset\\processed_zainab\\train.csv",
+    "C:\\Users\\Hp\\FYP-AdversarialAttacks\\dataset\\processed_zainab\\validation.csv",
+    "C:\\Users\\Hp\\FYP-AdversarialAttacks\\dataset\\processed_zainab\\test.csv",
+    "C:\\Users\\Hp\\FYP-AdversarialAttacks\\dataset\\processed_zainab\\split_assignments.npy",
+    "C:\\Users\\Hp\\FYP-AdversarialAttacks\\data_preprocessing\\zainab\\artifacts\\preprocessing_config.json",
+    "C:\\Users\\Hp\\FYP-AdversarialAttacks\\data_preprocessing\\zainab\\artifacts\\preprocessing_report.json"
+  ],
+  "runtime_seconds": 615.109
+}
