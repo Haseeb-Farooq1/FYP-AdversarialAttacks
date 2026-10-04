@@ -1,0 +1,145 @@
+{
+  "assigned_files": [
+    "Network_dataset_9.csv",
+    "Network_dataset_10.csv",
+    "Network_dataset_11.csv",
+    "Network_dataset_12.csv",
+    "Network_dataset_13.csv",
+    "Network_dataset_14.csv",
+    "Network_dataset_15.csv",
+    "Network_dataset_16.csv"
+  ],
+  "raw_combined_shape": [
+    8000000,
+    46
+  ],
+  "cleaning": {
+    "rows_before_dedup": 8000000,
+    "rows_after_dedup": 6719555,
+    "duplicates_removed": 1280445,
+    "dropped_leakage_prone_columns": [
+      "src_ip",
+      "dst_ip",
+      "ts"
+    ],
+    "missing_values_per_column_before_fill": {
+      "service": 5035995,
+      "dns_query": 6038562,
+      "dns_AA": 6031342,
+      "dns_RD": 6031342,
+      "dns_RA": 6031342,
+      "dns_rejected": 6031342,
+      "ssl_version": 6697213,
+      "ssl_cipher": 6697213,
+      "ssl_resumed": 6696256,
+      "ssl_established": 6696256,
+      "ssl_subject": 6697996,
+      "ssl_issuer": 6697996,
+      "http_trans_depth": 6702157,
+      "http_method": 6702159,
+      "http_uri": 6702159,
+      "http_referrer": 6719552,
+      "http_version": 6702539,
+      "http_user_agent": 6702159,
+      "http_orig_mime_types": 6719555,
+      "http_resp_mime_types": 6719080,
+      "weird_name": 6718742,
+      "weird_addl": 6719521,
+      "weird_notice": 6718742
+    },
+    "final_shape_after_cleaning": [
+      6719555,
+      43
+    ]
+  },
+  "attack_type_distribution": {
+    "ddos": 4635277,
+    "dos": 1504453,
+    "injection": 452659,
+    "normal": 127166
+  },
+  "binary_label_distribution": {
+    "1": 6592389,
+    "0": 127166
+  },
+  "train_shape_before_encoding": [
+    5375644,
+    43
+  ],
+  "test_shape_before_encoding": [
+    1343911,
+    43
+  ],
+  "encoding_and_scaling_fitted_on_train_only": {
+    "categorical_columns_fitted": {
+      "proto": 3,
+      "service": 5,
+      "conn_state": 13,
+      "dns_query": 1506,
+      "dns_AA": 3,
+      "dns_RD": 3,
+      "dns_RA": 3,
+      "dns_rejected": 3,
+      "ssl_version": 3,
+      "ssl_cipher": 3,
+      "ssl_resumed": 2,
+      "ssl_established": 3,
+      "ssl_subject": 2,
+      "ssl_issuer": 2,
+      "http_trans_depth": 2,
+      "http_method": 3,
+      "http_uri": 13,
+      "http_version": 2,
+      "http_user_agent": 98,
+      "http_orig_mime_types": 1,
+      "http_resp_mime_types": 2,
+      "weird_name": 10,
+      "weird_addl": 4,
+      "weird_notice": 2
+    },
+    "attack_type_class_mapping": {
+      "ddos": 0,
+      "dos": 1,
+      "injection": 2,
+      "normal": 3
+    },
+    "numeric_columns_fitted": [
+      "src_port",
+      "dst_port",
+      "duration",
+      "src_bytes",
+      "dst_bytes",
+      "missed_bytes",
+      "src_pkts",
+      "src_ip_bytes",
+      "dst_pkts",
+      "dst_ip_bytes",
+      "dns_qclass",
+      "dns_qtype",
+      "dns_rcode",
+      "http_trans_depth",
+      "http_version",
+      "http_request_body_len",
+      "http_response_body_len",
+      "http_status_code",
+      "http_orig_mime_types",
+      "weird_addl"
+    ]
+  },
+  "train_shape": [
+    5375644,
+    44
+  ],
+  "test_shape": [
+    1343911,
+    44
+  ],
+  "output_files": [
+    "data\\processed\\processed_train.csv",
+    "data\\processed\\processed_test.csv",
+    "data\\processed\\fitted_preprocessor.joblib"
+  ],
+  "runtime_seconds": 439.91,
+  "processed_by": "Muhammad Luqman (files 9-16)",
+  "leakage_fix_applied": "v2: encoder/scaler fitted on training split only, after the train/test split, then applied unchanged to the test split. No test-set information was used to fit any transformation."
+}
