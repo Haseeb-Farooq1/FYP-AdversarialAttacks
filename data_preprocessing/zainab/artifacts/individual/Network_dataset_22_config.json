@@ -1,0 +1,194 @@
+{
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "numerical_columns": [
+    "src_port",
+    "dst_port",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "categorical_columns": [
+    "proto",
+    "service",
+    "conn_state",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "http_status_code"
+  ],
+  "boolean_columns": [
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected"
+  ],
+  "category_codes": {
+    "missing": 0,
+    "unknown": 1,
+    "known_start": 2
+  },
+  "category_mappings": {
+    "proto": {
+      "icmp": 2,
+      "tcp": 3,
+      "udp": 4
+    },
+    "service": {
+      "dce_rpc": 2,
+      "dns": 3,
+      "ftp": 4,
+      "ftp-data": 5,
+      "gssapi": 6,
+      "http": 7,
+      "smb": 8,
+      "smb;gssapi": 9,
+      "ssl": 10
+    },
+    "conn_state": {
+      "OTH": 2,
+      "REJ": 3,
+      "RSTO": 4,
+      "RSTOS0": 5,
+      "RSTR": 6,
+      "RSTRH": 7,
+      "S0": 8,
+      "S1": 9,
+      "S2": 10,
+      "S3": 11,
+      "SF": 12,
+      "SH": 13,
+      "SHR": 14
+    },
+    "dns_qclass": {
+      "0": 2,
+      "1": 3,
+      "32769": 4
+    },
+    "dns_qtype": {
+      "0": 2,
+      "1": 3,
+      "12": 4,
+      "16": 5,
+      "2": 6,
+      "255": 7,
+      "28": 8,
+      "43": 9,
+      "48": 10
+    },
+    "dns_rcode": {
+      "0": 2,
+      "2": 3,
+      "3": 4,
+      "5": 5
+    },
+    "http_status_code": {
+      "0": 2,
+      "302": 3,
+      "400": 4,
+      "403": 5,
+      "404": 6
+    }
+  },
+  "boolean_mapping": {
+    "F": 0,
+    "T": 1,
+    "missing": 2
+  },
+  "numeric_imputation_means": {
+    "src_port": 44062.552147,
+    "dst_port": 6540.105028,
+    "duration": 1.6784969300080002,
+    "src_bytes": 674.817792276671,
+    "dst_bytes": 757.674835,
+    "missed_bytes": 21.180344,
+    "src_pkts": 3.380703,
+    "src_ip_bytes": 917.040707,
+    "dst_pkts": 2.745858,
+    "dst_ip_bytes": 920.662876,
+    "http_request_body_len": 0.0,
+    "http_response_body_len": 0.138101
+  },
+  "standard_scaler": {
+    "mean": [
+      44062.552147,
+      6540.105028,
+      1.6784969300080002,
+      674.8177922766707,
+      757.674835,
+      21.180344,
+      3.3807030000000005,
+      917.0407069999998,
+      2.745858,
+      920.662876,
+      0.0,
+      0.13810099999999997
+    ],
+    "scale": [
+      15212.025455316747,
+      15063.922018603624,
+      312.3701237691401,
+      26214.686891522953,
+      112652.22960200295,
+      1064.1608874000406,
+      113.42270509129021,
+      27808.469519889473,
+      186.13058505211828,
+      119832.4041818128,
+      1.0,
+      11.12510256643951
+    ],
+    "var": [
+      231405718.45320466,
+      226921746.5825711,
+      97575.09422354792,
+      687209808.8205854,
+      12690524834.30239,
+      1132438.3942720417,
+      12864.71003022579,
+      773310977.0386219,
+      34644.594691843835,
+      14359805091.993345,
+      0.0,
+      123.767907113799
+    ],
+    "fitted_rows": 1000000
+  },
+  "categorical_warning": "Category/Boolean codes are discrete, not continuous measurements; never scale or continuously perturb them.",
+  "log1p": false,
+  "fit_scope": "entire_individual_file",
+  "source_file": "Network_dataset_22.csv",
+  "source_sha256": "a1f6009f2be53bc1fba90f044d07ff5a9c5cfe4912b56690d8f02fb75aa335c0",
+  "split_performed": false,
+  "fit_warning": "Fitted on all rows of this source file, not a training partition. Other files have independent scales/category codes. For later held-out evaluation, split raw records first and refit preprocessing on training records only."
+}

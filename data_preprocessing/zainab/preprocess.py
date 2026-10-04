@@ -258,7 +258,7 @@ class CompactPreprocessor:
         result.scaler.mean_ = np.array(scaler["mean"])
         result.scaler.scale_ = np.array(scaler["scale"])
         result.scaler.var_ = np.array(scaler["var"])
-        result.scaler.n_samples_seen_ = scaler["training_rows"]
+        result.scaler.n_samples_seen_ = scaler.get("fitted_rows", scaler.get("training_rows"))
         result.scaler.n_features_in_ = len(NUMERICAL_COLUMNS)
         return result
 

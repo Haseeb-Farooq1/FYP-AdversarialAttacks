@@ -1,5 +1,32 @@
 # Zainab's compact preprocessing baseline
 
+## Independent files without splitting (current requested output)
+
+Run `.venv/Scripts/python.exe -B -m data_preprocessing.zainab.preprocess_individual`
+from the repository root. This mode writes seven files to
+`dataset/processed_zainab_individual/`, using the exact original basenames:
+`Network_dataset_17.csv` through `Network_dataset_22.csv`, and
+`Network_dataset_23(in).csv`. The directory is Git-ignored.
+
+Each entire input file is fitted independently, using its own imputation means,
+StandardScaler and category mappings. There are still 23 features plus `label`
+and `type`, with no row deletion, extra features, or train/validation/test split.
+One config per input and an aggregate `preprocessing_report.json` are saved under
+`data_preprocessing/zainab/artifacts/individual/`. Configs record `fitted_rows`
+and `fit_scope=entire_individual_file`, rather than claiming training-only fitting.
+They can be reloaded with `CompactPreprocessor.from_config`.
+
+Category codes and scales can differ between these files; do not concatenate
+their encoded features as if they used a shared transformation. For a later
+held-out model evaluation, return to raw records, split them first, and fit
+preprocessing only on training data. This mode does not compute training class
+weights. The earlier split outputs, configs, and instructor reports remain as
+records of the previous run; they do not describe this new independent run.
+
+Tests: `.venv/Scripts/python.exe -B -m unittest data_preprocessing.zainab.test_individual -v`
+
+## Previous train/validation/test workflow
+
 This implementation processes the seven exact filenames `Network_dataset_17.csv`
 through `Network_dataset_22.csv` and `Network_dataset_23(in).csv`. It preserves
 every row and produces **23 model features**. Haseeb's implementation is unchanged.

@@ -1,0 +1,480 @@
+{
+  "mode": "independent_per_file",
+  "split_performed": false,
+  "files_processed": 7,
+  "chunk_size": 50000,
+  "original_rows": 6339021,
+  "final_rows": 6339021,
+  "final_model_feature_count": 23,
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "target": "label",
+  "reporting_only": "type",
+  "dropped_columns": {
+    "ts": "Timestamp: exclude collection context from the classifier.",
+    "src_ip": "Source identifier: avoid memorizing testbed addresses.",
+    "dst_ip": "Destination identifier: avoid memorizing testbed addresses.",
+    "dns_query": "Raw query vocabulary; omit text to keep the baseline compact.",
+    "ssl_version": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_cipher": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_resumed": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_established": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_subject": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "ssl_issuer": "Over 99.98% missing in the initial files 17-23 inspection.",
+    "http_trans_depth": "Almost entirely missing; observed nonmissing value is 1.",
+    "http_version": "Almost entirely missing; observed nonmissing value is 1.1.",
+    "http_method": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_uri": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_referrer": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_user_agent": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_orig_mime_types": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "http_resp_mime_types": "Over 99.89% missing; omit sparse HTTP text/categories.",
+    "weird_name": "Over 99.99% missing in the initial inspection.",
+    "weird_addl": "Over 99.99% missing in the initial inspection.",
+    "weird_notice": "Over 99.99% missing in the initial inspection."
+  },
+  "invalid_src_bytes_count": 694,
+  "missing_after_preprocessing": 0,
+  "nonfinite_after_preprocessing": 0,
+  "steps": [
+    "Verify each raw schema and preserve the original source filename.",
+    "Select the same 23 predictors and clean values in chunks.",
+    "Learn numerical imputation means and category mappings independently from each entire file.",
+    "Fit a separate StandardScaler on each file's imputed numerical values.",
+    "Write one unsplit CSV and one saved configuration per file, preserving row order and both targets.",
+    "Verify row counts, finite outputs and unchanged raw-file hashes."
+  ],
+  "limitations": [
+    "Independent category codes and scales are not directly comparable across files.",
+    "All source rows influence fitting. Later held-out evaluation requires refitting from raw training records.",
+    "No splitting, deduplication, resampling, synthetic records, or training class weights are produced."
+  ],
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scikit_learn": "1.9.1"
+  },
+  "files": [
+    {
+      "input_file": "Network_dataset_17.csv",
+      "output_file": "Network_dataset_17.csv",
+      "config_file": "Network_dataset_17_config.json",
+      "raw_sha256": "d933a39088804258386441d83e4dec29ad14b97378b2a216f9919b0f5180143a",
+      "raw_sha256_unchanged": true,
+      "original_rows": 1000000,
+      "final_rows": 1000000,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 0,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 911240,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 946055,
+        "dns_RD": 946055,
+        "dns_RA": 946055,
+        "dns_rejected": 946055
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 966289,
+        "0": 33711
+      },
+      "type_distribution": {
+        "ddos": 966289,
+        "normal": 33711
+      },
+      "output_size_bytes": 267897423,
+      "runtime_seconds": 165.32
+    },
+    {
+      "input_file": "Network_dataset_18.csv",
+      "output_file": "Network_dataset_18.csv",
+      "config_file": "Network_dataset_18_config.json",
+      "raw_sha256": "32d04d9cfefee40774e979c600ec322e2da6518bb6d8974999075007794c3934",
+      "raw_sha256_unchanged": true,
+      "original_rows": 1000000,
+      "final_rows": 1000000,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 0,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 696542,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 960136,
+        "dns_RD": 960136,
+        "dns_RA": 960136,
+        "dns_rejected": 960136
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 950564,
+        "0": 49436
+      },
+      "type_distribution": {
+        "ddos": 563440,
+        "normal": 49436,
+        "password": 387124
+      },
+      "output_size_bytes": 284988028,
+      "runtime_seconds": 151.145
+    },
+    {
+      "input_file": "Network_dataset_19.csv",
+      "output_file": "Network_dataset_19.csv",
+      "config_file": "Network_dataset_19_config.json",
+      "raw_sha256": "162203394dc41b3020bdc70b99e213f620fd66bacd333dbdf1cd5279adbd5f5d",
+      "raw_sha256_unchanged": true,
+      "original_rows": 1000000,
+      "final_rows": 1000000,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 0,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 222800,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 996793,
+        "dns_RD": 996793,
+        "dns_RA": 996793,
+        "dns_rejected": 996793
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 987292,
+        "0": 12708
+      },
+      "type_distribution": {
+        "password": 987292,
+        "normal": 12708
+      },
+      "output_size_bytes": 288310777,
+      "runtime_seconds": 128.948
+    },
+    {
+      "input_file": "Network_dataset_20.csv",
+      "output_file": "Network_dataset_20.csv",
+      "config_file": "Network_dataset_20_config.json",
+      "raw_sha256": "ca793a8ff6860c2a8b8e8b4bc72271bbbfc011b0b6c523765658949e1513fd0f",
+      "raw_sha256_unchanged": true,
+      "original_rows": 1000000,
+      "final_rows": 1000000,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 0,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 144166,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 818669,
+        "dns_RD": 818669,
+        "dns_RA": 818669,
+        "dns_rejected": 818669
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 978918,
+        "0": 21082
+      },
+      "type_distribution": {
+        "password": 344152,
+        "normal": 21082,
+        "xss": 634766
+      },
+      "output_size_bytes": 283497957,
+      "runtime_seconds": 163.857
+    },
+    {
+      "input_file": "Network_dataset_21.csv",
+      "output_file": "Network_dataset_21.csv",
+      "config_file": "Network_dataset_21_config.json",
+      "raw_sha256": "63fe9f2c91c48c0f30721eda03864675e1d87103a36cd61c19a3ac68d8ac077b",
+      "raw_sha256_unchanged": true,
+      "original_rows": 1000000,
+      "final_rows": 1000000,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 0,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 35763,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 714036,
+        "dns_RD": 714036,
+        "dns_RA": 714036,
+        "dns_rejected": 714036
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 985593,
+        "0": 14407
+      },
+      "type_distribution": {
+        "xss": 985593,
+        "normal": 14407
+      },
+      "output_size_bytes": 263210176,
+      "runtime_seconds": 104.075
+    },
+    {
+      "input_file": "Network_dataset_22.csv",
+      "output_file": "Network_dataset_22.csv",
+      "config_file": "Network_dataset_22_config.json",
+      "raw_sha256": "a1f6009f2be53bc1fba90f044d07ff5a9c5cfe4912b56690d8f02fb75aa335c0",
+      "raw_sha256_unchanged": true,
+      "original_rows": 1000000,
+      "final_rows": 1000000,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 690,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 690,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 479393,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 847431,
+        "dns_RD": 847431,
+        "dns_RA": 847431,
+        "dns_rejected": 847431
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 765012,
+        "0": 234988
+      },
+      "type_distribution": {
+        "xss": 488585,
+        "normal": 234988,
+        "ransomware": 72805,
+        "backdoor": 203622
+      },
+      "output_size_bytes": 269775202,
+      "runtime_seconds": 96.236
+    },
+    {
+      "input_file": "Network_dataset_23(in).csv",
+      "output_file": "Network_dataset_23(in).csv",
+      "config_file": "Network_dataset_23(in)_config.json",
+      "raw_sha256": "8b1f13f87149ab423d15d6f76bfdf2c5cc454d68024fc7445dfcfaa499c94d8c",
+      "raw_sha256_unchanged": true,
+      "original_rows": 339021,
+      "final_rows": 339021,
+      "rows_removed": 0,
+      "original_columns": 46,
+      "original_feature_count": 44,
+      "final_model_feature_count": 23,
+      "output_columns": 25,
+      "invalid_src_bytes_count": 4,
+      "missing_numeric_before_imputation": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 4,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categories_before_encoding": {
+        "proto": 0,
+        "service": 319576,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_booleans": {
+        "dns_AA": 327910,
+        "dns_RD": 327910,
+        "dns_RA": 327910,
+        "dns_rejected": 327910
+      },
+      "missing_after_preprocessing": 0,
+      "nonfinite_after_preprocessing": 0,
+      "label_distribution": {
+        "1": 305546,
+        "0": 33475
+      },
+      "type_distribution": {
+        "backdoor": 304494,
+        "normal": 33475,
+        "mitm": 1052
+      },
+      "output_size_bytes": 87560612,
+      "runtime_seconds": 29.806
+    }
+  ],
+  "runtime_seconds": 840.383
+}

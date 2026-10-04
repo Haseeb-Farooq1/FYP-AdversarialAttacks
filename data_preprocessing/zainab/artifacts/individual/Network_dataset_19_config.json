@@ -1,0 +1,189 @@
+{
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "numerical_columns": [
+    "src_port",
+    "dst_port",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "categorical_columns": [
+    "proto",
+    "service",
+    "conn_state",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "http_status_code"
+  ],
+  "boolean_columns": [
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected"
+  ],
+  "category_codes": {
+    "missing": 0,
+    "unknown": 1,
+    "known_start": 2
+  },
+  "category_mappings": {
+    "proto": {
+      "icmp": 2,
+      "tcp": 3,
+      "udp": 4
+    },
+    "service": {
+      "dhcp": 2,
+      "dns": 3,
+      "ftp": 4,
+      "http": 5,
+      "ssl": 6
+    },
+    "conn_state": {
+      "OTH": 2,
+      "REJ": 3,
+      "RSTO": 4,
+      "RSTOS0": 5,
+      "RSTR": 6,
+      "RSTRH": 7,
+      "S0": 8,
+      "S1": 9,
+      "S2": 10,
+      "S3": 11,
+      "SF": 12,
+      "SH": 13,
+      "SHR": 14
+    },
+    "dns_qclass": {
+      "0": 2,
+      "1": 3,
+      "32769": 4
+    },
+    "dns_qtype": {
+      "0": 2,
+      "1": 3,
+      "12": 4,
+      "2": 5,
+      "255": 6,
+      "28": 7,
+      "32": 8,
+      "43": 9,
+      "48": 10
+    },
+    "dns_rcode": {
+      "0": 2,
+      "2": 3,
+      "3": 4
+    },
+    "http_status_code": {
+      "0": 2,
+      "200": 3,
+      "301": 4,
+      "302": 5,
+      "404": 6
+    }
+  },
+  "boolean_mapping": {
+    "F": 0,
+    "T": 1,
+    "missing": 2
+  },
+  "numeric_imputation_means": {
+    "src_port": 46925.711696,
+    "dst_port": 355.493989,
+    "duration": 0.38076231844,
+    "src_bytes": 190.548637,
+    "dst_bytes": 1197.495342,
+    "missed_bytes": 0.506459,
+    "src_pkts": 5.213262,
+    "src_ip_bytes": 431.01412,
+    "dst_pkts": 4.810608,
+    "dst_ip_bytes": 1416.577613,
+    "http_request_body_len": 0.047464,
+    "http_response_body_len": 3.487575
+  },
+  "standard_scaler": {
+    "mean": [
+      46925.711696,
+      355.49398899999994,
+      0.38076231844,
+      190.548637,
+      1197.495342,
+      0.506459,
+      5.213262,
+      431.01412,
+      4.810608,
+      1416.577613,
+      0.047464,
+      3.487575
+    ],
+    "scale": [
+      8311.786226679125,
+      3483.0657365481734,
+      23.921450903647443,
+      44424.58124542281,
+      5229.7279688804365,
+      26.27127747714829,
+      75.90115683782005,
+      47418.82752832964,
+      41.51884859519032,
+      5804.402347300041,
+      1.4072715333950299,
+      114.34472475641091
+    ],
+    "var": [
+      69085790.27801283,
+      12131746.92511587,
+      572.235813335615,
+      1973543418.8311718,
+      27350054.6284903,
+      690.1800202813189,
+      5760.985609319358,
+      2248545204.161473,
+      1723.8147886703373,
+      33691086.609342225,
+      1.9804131687039985,
+      13074.716079619371
+    ],
+    "fitted_rows": 1000000
+  },
+  "categorical_warning": "Category/Boolean codes are discrete, not continuous measurements; never scale or continuously perturb them.",
+  "log1p": false,
+  "fit_scope": "entire_individual_file",
+  "source_file": "Network_dataset_19.csv",
+  "source_sha256": "162203394dc41b3020bdc70b99e213f620fd66bacd333dbdf1cd5279adbd5f5d",
+  "split_performed": false,
+  "fit_warning": "Fitted on all rows of this source file, not a training partition. Other files have independent scales/category codes. For later held-out evaluation, split raw records first and refit preprocessing on training records only."
+}

@@ -1,0 +1,189 @@
+{
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "numerical_columns": [
+    "src_port",
+    "dst_port",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "categorical_columns": [
+    "proto",
+    "service",
+    "conn_state",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "http_status_code"
+  ],
+  "boolean_columns": [
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected"
+  ],
+  "category_codes": {
+    "missing": 0,
+    "unknown": 1,
+    "known_start": 2
+  },
+  "category_mappings": {
+    "proto": {
+      "icmp": 2,
+      "tcp": 3,
+      "udp": 4
+    },
+    "service": {
+      "dns": 2,
+      "gssapi;ntlm;smb": 3,
+      "http": 4,
+      "smb;ntlm;gssapi": 5,
+      "ssl": 6
+    },
+    "conn_state": {
+      "OTH": 2,
+      "REJ": 3,
+      "RSTO": 4,
+      "RSTOS0": 5,
+      "RSTR": 6,
+      "RSTRH": 7,
+      "S0": 8,
+      "S1": 9,
+      "S2": 10,
+      "S3": 11,
+      "SF": 12,
+      "SH": 13,
+      "SHR": 14
+    },
+    "dns_qclass": {
+      "0": 2,
+      "1": 3,
+      "32769": 4
+    },
+    "dns_qtype": {
+      "0": 2,
+      "1": 3,
+      "12": 4,
+      "16": 5,
+      "2": 6,
+      "255": 7,
+      "28": 8,
+      "32": 9,
+      "33": 10,
+      "43": 11,
+      "48": 12,
+      "6": 13
+    },
+    "dns_rcode": {
+      "0": 2,
+      "2": 3,
+      "3": 4,
+      "5": 5
+    },
+    "http_status_code": {
+      "0": 2
+    }
+  },
+  "boolean_mapping": {
+    "F": 0,
+    "T": 1,
+    "missing": 2
+  },
+  "numeric_imputation_means": {
+    "src_port": 57527.20035042077,
+    "dst_port": 6939.899159639079,
+    "duration": 0.4802049278628758,
+    "src_bytes": 919.8377279015507,
+    "dst_bytes": 115129.68087817568,
+    "missed_bytes": 18326.09909415641,
+    "src_pkts": 38.36748755976768,
+    "src_ip_bytes": 2576.820689573802,
+    "dst_pkts": 45.393317818070265,
+    "dst_ip_bytes": 3217.4633577271024,
+    "http_request_body_len": 0.0,
+    "http_response_body_len": 0.0
+  },
+  "standard_scaler": {
+    "mean": [
+      57527.20035042077,
+      6939.899159639079,
+      0.4802049278628758,
+      919.8377279015507,
+      115129.68087817568,
+      18326.09909415641,
+      38.36748755976768,
+      2576.820689573802,
+      45.393317818070265,
+      3217.4633577271024,
+      0.0,
+      0.0
+    ],
+    "scale": [
+      8114.086640822836,
+      9303.906986346354,
+      63.42649452372083,
+      283506.82774014486,
+      20303703.992760804,
+      5389547.882755288,
+      6717.857478705369,
+      482463.09558083676,
+      7223.0607808938175,
+      362683.748829418,
+      1.0,
+      1.0
+    ],
+    "var": [
+      65838402.014779605,
+      86562685.2105845,
+      4022.9202075675876,
+      80376121375.28018,
+      412240395825651.06,
+      29047226380512.008,
+      45129609.104197666,
+      232770638597.44363,
+      52172607.0444864,
+      131539501664.96036,
+      0.0,
+      0.0
+    ],
+    "fitted_rows": 339021
+  },
+  "categorical_warning": "Category/Boolean codes are discrete, not continuous measurements; never scale or continuously perturb them.",
+  "log1p": false,
+  "fit_scope": "entire_individual_file",
+  "source_file": "Network_dataset_23(in).csv",
+  "source_sha256": "8b1f13f87149ab423d15d6f76bfdf2c5cc454d68024fc7445dfcfaa499c94d8c",
+  "split_performed": false,
+  "fit_warning": "Fitted on all rows of this source file, not a training partition. Other files have independent scales/category codes. For later held-out evaluation, split raw records first and refit preprocessing on training records only."
+}
