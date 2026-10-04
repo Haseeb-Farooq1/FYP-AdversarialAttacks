@@ -4,13 +4,20 @@ ToN_IoT Network Dataset - Preprocessing Pipeline (Luqman's portion)
 Handles Network_dataset_9.csv through Network_dataset_16.csv from the
 UNSW ToN_IoT Processed_Network dataset.
 
+v2: fixes a data-leakage bug from v1. The train/test split now happens
+BEFORE any encoder or scaler is fitted, and those are fitted on the
+training split only, then applied unchanged to the test split. The
+fitted transformer is also saved to disk so the exact same transformation
+can be reapplied later (e.g. to adversarially-generated traffic).
+
 Usage:
     python preprocessing_luqman.py --data_dir ./data/raw --out_dir ./data/processed
 
 Output:
     - processed_train.csv
     - processed_test.csv
-    - preprocessing_report.json   (summary stats, matches team's shared report format)
+    - fitted_preprocessor.joblib   (category mappings + scaler, for reuse)
+    - preprocessing_report_luqman.json
 """
 
 import argparse
@@ -19,10 +26,11 @@ import os
 import time
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import StandardScaler
 
 # ---------------------------------------------------------------------------
 # Config
@@ -30,17 +38,11 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 FILE_RANGE = range(9, 17)  # Network_dataset_9.csv ... Network_dataset_16.csv
 
-# Columns known to be simple identifiers / high-leakage risk for a generic
-# classifier (raw IPs and raw timestamp let a model "memorise" the testbed
-# instead of learning traffic behaviour). Dropped by default; keep them with
-# --keep_ip_ts if you specifically want to study that effect later.
 LEAKAGE_PRONE_COLS = ["src_ip", "dst_ip", "ts"]
 
-TARGET_BINARY = "label"   # 0 = normal, 1 = attack
-TARGET_MULTI = "type"     # normal / backdoor / ddos / dos / injection /
-                           # mitm / password / ransomware / scanning / xss
+TARGET_BINARY = "label"
+TARGET_MULTI = "type"
 
-# Columns that are categorical/string-typed in the raw ToN_IoT network CSVs.
 CATEGORICAL_COLS = [
     "proto", "service", "conn_state",
     "dns_query", "dns_AA", "dns_RD", "dns_RA", "dns_rejected",
@@ -51,8 +53,8 @@ CATEGORICAL_COLS = [
     "weird_name", "weird_addl", "weird_notice",
 ]
 
-# The raw files use "-" as their missing-value marker instead of a blank cell.
 MISSING_MARKER = "-"
+UNSEEN_CODE = -1  # reserved code for a category seen in test but never in train
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +62,6 @@ MISSING_MARKER = "-"
 # ---------------------------------------------------------------------------
 
 def load_files(data_dir: str, file_range=FILE_RANGE) -> pd.DataFrame:
-    """Load and concatenate the assigned Network_dataset_N.csv files."""
     frames = []
     missing_files = []
     for i in file_range:
@@ -89,7 +90,9 @@ def load_files(data_dir: str, file_range=FILE_RANGE) -> pd.DataFrame:
 
 
 def clean_data(df: pd.DataFrame, keep_ip_ts: bool = False) -> tuple[pd.DataFrame, dict]:
-    """Drop duplicates, handle missing values, drop leakage-prone columns."""
+    """Drop duplicates, handle missing values, drop leakage-prone columns.
+    No statistics are learned from the data here (fills use fixed constants),
+    so this step is safe to run before the train/test split."""
     stats = {}
     stats["rows_before_dedup"] = len(df)
 
@@ -102,8 +105,6 @@ def clean_data(df: pd.DataFrame, keep_ip_ts: bool = False) -> tuple[pd.DataFrame
         df = df.drop(columns=drop_cols)
         stats["dropped_leakage_prone_columns"] = drop_cols
 
-    # Missing values: numeric -> 0 (absence of a protocol field is
-    # meaningful, e.g. no SSL handshake happened), categorical -> "none"
     missing_before = df.isna().sum()
     stats["missing_values_per_column_before_fill"] = {
         k: int(v) for k, v in missing_before[missing_before > 0].items()
@@ -113,7 +114,6 @@ def clean_data(df: pd.DataFrame, keep_ip_ts: bool = False) -> tuple[pd.DataFrame
     for target in (TARGET_BINARY, TARGET_MULTI):
         if target in numeric_cols:
             numeric_cols.remove(target)
-
     df[numeric_cols] = df[numeric_cols].fillna(0)
 
     cat_cols_present = [c for c in CATEGORICAL_COLS if c in df.columns]
@@ -123,40 +123,64 @@ def clean_data(df: pd.DataFrame, keep_ip_ts: bool = False) -> tuple[pd.DataFrame
     return df, stats
 
 
-def encode_and_scale(df: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
-    """Label-encode categorical columns, scale numeric columns."""
+def fit_transformers(train_df: pd.DataFrame) -> tuple[dict, dict]:
+    """Learn category mappings and scaler parameters from the TRAINING split only."""
     stats = {}
-    encoders = {}
+    category_maps = {}
 
-    cat_cols_present = [c for c in CATEGORICAL_COLS if c in df.columns]
+    cat_cols_present = [c for c in CATEGORICAL_COLS if c in train_df.columns]
     for col in cat_cols_present:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col].astype(str))
-        encoders[col] = len(le.classes_)
-    stats["categorical_columns_encoded"] = encoders
+        uniques = sorted(train_df[col].astype(str).unique())
+        category_maps[col] = {val: code for code, val in enumerate(uniques)}
+    stats["categorical_columns_fitted"] = {k: len(v) for k, v in category_maps.items()}
 
-    # Encode the multiclass target too, but keep a readable mapping.
-    if TARGET_MULTI in df.columns:
-        le_type = LabelEncoder()
-        df[TARGET_MULTI + "_encoded"] = le_type.fit_transform(df[TARGET_MULTI].astype(str))
-        stats["attack_type_class_mapping"] = {
-            str(cls): int(code) for code, cls in enumerate(le_type.classes_)
-        }
+    type_map = None
+    if TARGET_MULTI in train_df.columns:
+        uniques = sorted(train_df[TARGET_MULTI].astype(str).unique())
+        type_map = {val: code for code, val in enumerate(uniques)}
+        stats["attack_type_class_mapping"] = type_map
 
-    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-    for target in (TARGET_BINARY, TARGET_MULTI + "_encoded"):
+    numeric_cols = train_df.select_dtypes(include=[np.number]).columns.tolist()
+    for target in (TARGET_BINARY,):
         if target in numeric_cols:
             numeric_cols.remove(target)
 
     scaler = StandardScaler()
-    df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
-    stats["numeric_columns_scaled"] = len(numeric_cols)
+    scaler.fit(train_df[numeric_cols])
+    stats["numeric_columns_fitted"] = numeric_cols
 
-    return df, stats
+    transformer = {
+        "category_maps": category_maps,
+        "type_map": type_map,
+        "scaler": scaler,
+        "numeric_cols": numeric_cols,
+        "categorical_cols": cat_cols_present,
+    }
+    return transformer, stats
+
+
+def apply_transformers(df: pd.DataFrame, transformer: dict) -> pd.DataFrame:
+    """Apply already-fitted mappings/scaler to a split (train or test).
+    Values not seen during fitting are mapped to UNSEEN_CODE rather than
+    raising an error or silently refitting."""
+    df = df.copy()
+
+    for col, mapping in transformer["category_maps"].items():
+        df[col] = df[col].astype(str).map(mapping).fillna(UNSEEN_CODE).astype(int)
+
+    if transformer["type_map"] is not None and TARGET_MULTI in df.columns:
+        df[TARGET_MULTI + "_encoded"] = (
+            df[TARGET_MULTI].astype(str).map(transformer["type_map"]).fillna(UNSEEN_CODE).astype(int)
+        )
+
+    numeric_cols = transformer["numeric_cols"]
+    df[numeric_cols] = transformer["scaler"].transform(df[numeric_cols])
+
+    return df
 
 
 def split_data(df: pd.DataFrame, test_size: float = 0.2, seed: int = 42):
-    """Stratified split on attack type so rare classes appear in both sets."""
+    """Split BEFORE any encoder/scaler is fit, on the raw cleaned values."""
     stratify_col = df[TARGET_MULTI] if TARGET_MULTI in df.columns else df[TARGET_BINARY]
     train_df, test_df = train_test_split(
         df, test_size=test_size, random_state=seed, stratify=stratify_col
@@ -170,9 +194,9 @@ def split_data(df: pd.DataFrame, test_size: float = 0.2, seed: int = 42):
 
 def main():
     parser = argparse.ArgumentParser(description="Preprocess ToN_IoT files 9-16 (Luqman's portion)")
-    parser.add_argument("--data_dir", default="./data/raw", help="Folder containing Network_dataset_*.csv")
-    parser.add_argument("--out_dir", default="./data/processed", help="Where to write processed output")
-    parser.add_argument("--keep_ip_ts", action="store_true", help="Keep src_ip/dst_ip/ts columns instead of dropping them")
+    parser.add_argument("--data_dir", default="./data/raw")
+    parser.add_argument("--out_dir", default="./data/processed")
+    parser.add_argument("--keep_ip_ts", action="store_true")
     parser.add_argument("--test_size", type=float, default=0.2)
     args = parser.parse_args()
 
@@ -194,10 +218,19 @@ def main():
             str(k): int(v) for k, v in df[TARGET_BINARY].value_counts().to_dict().items()
         }
 
-    df, encode_stats = encode_and_scale(df)
-    report["encoding_and_scaling"] = encode_stats
-
+    # --- split FIRST, on cleaned but not-yet-encoded data ---
     train_df, test_df = split_data(df, test_size=args.test_size)
+    report["train_shape_before_encoding"] = list(train_df.shape)
+    report["test_shape_before_encoding"] = list(test_df.shape)
+
+    # --- fit encoders/scaler on TRAIN ONLY ---
+    transformer, fit_stats = fit_transformers(train_df)
+    report["encoding_and_scaling_fitted_on_train_only"] = fit_stats
+
+    # --- apply the frozen transformer to both splits ---
+    train_df = apply_transformers(train_df, transformer)
+    test_df = apply_transformers(test_df, transformer)
+
     report["train_shape"] = list(train_df.shape)
     report["test_shape"] = list(test_df.shape)
 
@@ -206,9 +239,18 @@ def main():
     train_df.to_csv(train_path, index=False)
     test_df.to_csv(test_path, index=False)
 
-    report["output_files"] = [str(train_path), str(test_path)]
+    # save the fitted transformer for reuse (e.g. on adversarial examples later)
+    transformer_path = Path(args.out_dir) / "fitted_preprocessor.joblib"
+    joblib.dump(transformer, transformer_path)
+
+    report["output_files"] = [str(train_path), str(test_path), str(transformer_path)]
     report["runtime_seconds"] = round(time.time() - start, 2)
     report["processed_by"] = "Muhammad Luqman (files 9-16)"
+    report["leakage_fix_applied"] = (
+        "v2: encoder/scaler fitted on training split only, after the train/test split, "
+        "then applied unchanged to the test split. No test-set information was used "
+        "to fit any transformation."
+    )
 
     report_path = Path(args.out_dir) / "preprocessing_report_luqman.json"
     with open(report_path, "w") as f:
@@ -216,6 +258,7 @@ def main():
 
     print(f"\nDone in {report['runtime_seconds']}s")
     print(f"Train: {train_df.shape}  Test: {test_df.shape}")
+    print(f"Fitted transformer saved to {transformer_path}")
     print(f"Report written to {report_path}")
 
 

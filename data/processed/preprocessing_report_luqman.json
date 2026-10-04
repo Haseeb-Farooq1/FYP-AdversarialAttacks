@@ -62,25 +62,33 @@
     "1": 6592389,
     "0": 127166
   },
-  "encoding_and_scaling": {
-    "categorical_columns_encoded": {
+  "train_shape_before_encoding": [
+    5375644,
+    43
+  ],
+  "test_shape_before_encoding": [
+    1343911,
+    43
+  ],
+  "encoding_and_scaling_fitted_on_train_only": {
+    "categorical_columns_fitted": {
       "proto": 3,
       "service": 5,
       "conn_state": 13,
-      "dns_query": 1573,
+      "dns_query": 1506,
       "dns_AA": 3,
       "dns_RD": 3,
       "dns_RA": 3,
       "dns_rejected": 3,
       "ssl_version": 3,
-      "ssl_cipher": 4,
+      "ssl_cipher": 3,
       "ssl_resumed": 2,
       "ssl_established": 3,
       "ssl_subject": 2,
       "ssl_issuer": 2,
       "http_trans_depth": 2,
       "http_method": 3,
-      "http_uri": 16,
+      "http_uri": 13,
       "http_version": 2,
       "http_user_agent": 98,
       "http_orig_mime_types": 1,
@@ -95,7 +103,28 @@
       "injection": 2,
       "normal": 3
     },
-    "numeric_columns_scaled": 40
+    "numeric_columns_fitted": [
+      "src_port",
+      "dst_port",
+      "duration",
+      "src_bytes",
+      "dst_bytes",
+      "missed_bytes",
+      "src_pkts",
+      "src_ip_bytes",
+      "dst_pkts",
+      "dst_ip_bytes",
+      "dns_qclass",
+      "dns_qtype",
+      "dns_rcode",
+      "http_trans_depth",
+      "http_version",
+      "http_request_body_len",
+      "http_response_body_len",
+      "http_status_code",
+      "http_orig_mime_types",
+      "weird_addl"
+    ]
   },
   "train_shape": [
     5375644,
@@ -107,8 +136,10 @@
   ],
   "output_files": [
     "data\\processed\\processed_train.csv",
-    "data\\processed\\processed_test.csv"
+    "data\\processed\\processed_test.csv",
+    "data\\processed\\fitted_preprocessor.joblib"
   ],
-  "runtime_seconds": 514.85,
-  "processed_by": "Muhammad Luqman (files 9-16)"
+  "runtime_seconds": 439.91,
+  "processed_by": "Muhammad Luqman (files 9-16)",
+  "leakage_fix_applied": "v2: encoder/scaler fitted on training split only, after the train/test split, then applied unchanged to the test split. No test-set information was used to fit any transformation."
 }
