@@ -1,0 +1,705 @@
+{
+  "format_version": 1,
+  "mode": "shared_fit_separate_files",
+  "fit_scope": "all_selected_preprocessing_files",
+  "fit_warning": "This shared preprocessing baseline fits transformation parameters using the selected preprocessing dataset as a whole. It is intended for preprocessing development and pipeline comparison. Before final model evaluation, raw records must first be divided into training/validation/test sets and all learned preprocessing parameters must be refitted using training data only.",
+  "split_performed": false,
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "numerical_columns": [
+    "src_port",
+    "dst_port",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "categorical_columns": [
+    "proto",
+    "service",
+    "conn_state",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "http_status_code"
+  ],
+  "boolean_columns": [
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected"
+  ],
+  "dropped_columns": [
+    "ts",
+    "src_ip",
+    "dst_ip",
+    "dns_query",
+    "ssl_version",
+    "ssl_cipher",
+    "ssl_resumed",
+    "ssl_established",
+    "ssl_subject",
+    "ssl_issuer",
+    "http_trans_depth",
+    "http_method",
+    "http_uri",
+    "http_referrer",
+    "http_version",
+    "http_user_agent",
+    "http_orig_mime_types",
+    "http_resp_mime_types",
+    "weird_name",
+    "weird_addl",
+    "weird_notice"
+  ],
+  "feature_selection_note": "Fixed 23-feature compact baseline, not a claim that excluded features are universally useless.",
+  "numeric_imputation_medians": {
+    "src_port": 47860.0,
+    "dst_port": 80.0,
+    "duration": 0.02504,
+    "src_bytes": 80.0,
+    "dst_bytes": 90.0,
+    "missed_bytes": 0.0,
+    "src_pkts": 4.0,
+    "src_ip_bytes": 180.0,
+    "dst_pkts": 3.0,
+    "dst_ip_bytes": 168.0,
+    "http_request_body_len": 0.0,
+    "http_response_body_len": 0.0
+  },
+  "cleaning": {
+    "strip_whitespace": true,
+    "missing_markers": [
+      "",
+      "-"
+    ],
+    "src_bytes_invalid_as_missing": [
+      "0.0.0.0"
+    ],
+    "other_invalid_numeric": "error",
+    "unexpected_boolean": "error",
+    "preserve_legitimate_zeros": true
+  },
+  "median_method": "Exact median of all observed finite cleaned float64 values; disk-backed per-column in-place partition, no sampling.",
+  "log1p_columns": [
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "port_warning": "Ports are discrete network identifiers, not physical continuous measurements. Scaling is retained for baseline comparability and has limited semantic meaning. Later compare current ports, removing src_port, and categorical/bucketed dst_port.",
+  "log1p_nonnegativity_verified": {
+    "duration": true,
+    "src_bytes": true,
+    "dst_bytes": true,
+    "missed_bytes": true,
+    "src_pkts": true,
+    "src_ip_bytes": true,
+    "dst_pkts": true,
+    "dst_ip_bytes": true,
+    "http_request_body_len": true,
+    "http_response_body_len": true
+  },
+  "transformation_order": [
+    "explicit numeric cleaning",
+    "shared median imputation",
+    "log1p on configured non-port columns",
+    "shared StandardScaler"
+  ],
+  "observed_numerical": {
+    "src_port": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 65535.0,
+      "integer_valued": true
+    },
+    "dst_port": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 65535.0,
+      "integer_valued": true
+    },
+    "duration": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 93516.92917,
+      "integer_valued": false
+    },
+    "src_bytes": {
+      "count": 6338327,
+      "min": 0.0,
+      "max": 4223093775.0,
+      "integer_valued": true
+    },
+    "dst_bytes": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 6172672507.0,
+      "integer_valued": true
+    },
+    "missed_bytes": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 2142544858.0,
+      "integer_valued": true
+    },
+    "src_pkts": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 2570179.0,
+      "integer_valued": true
+    },
+    "src_ip_bytes": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 201778176.0,
+      "integer_valued": true
+    },
+    "dst_pkts": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 3238855.0,
+      "integer_valued": true
+    },
+    "dst_ip_bytes": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 130872663.0,
+      "integer_valued": true
+    },
+    "http_request_body_len": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 88.0,
+      "integer_valued": true
+    },
+    "http_response_body_len": {
+      "count": 6339021,
+      "min": 0.0,
+      "max": 15401.0,
+      "integer_valued": true
+    }
+  },
+  "standard_scaler": {
+    "mean": [
+      45973.28145560647,
+      1780.7311660586074,
+      0.7463420977199827,
+      3.3133774082253766,
+      3.6887706485549807,
+      0.05840366245235276,
+      1.4571436434568188,
+      5.54338857684889,
+      1.2777933493563542,
+      5.395286498807498,
+      0.0009996369433163275,
+      0.005600837634687015
+    ],
+    "scale": [
+      12122.000352212308,
+      7599.055788760538,
+      1.396273278741466,
+      3.179337668657178,
+      3.464475657341753,
+      0.6877706746292168,
+      0.5646563019397305,
+      1.4128515838690645,
+      0.5935129279841302,
+      2.048812860573885,
+      0.06122093648911414,
+      0.19286624217251425
+    ],
+    "var": [
+      146942892.53903532,
+      57745648.880695045,
+      1.9495790689274435,
+      10.10818801134246,
+      12.00259158031357,
+      0.473028500879928,
+      0.31883673932025214,
+      1.996149598041324,
+      0.35225759568429543,
+      4.197634137652946,
+      0.0037480030646041473,
+      0.03719738736974691
+    ],
+    "fitted_rows": 6339021
+  },
+  "category_mappings": {
+    "proto": {
+      "icmp": 2,
+      "tcp": 3,
+      "udp": 4
+    },
+    "service": {
+      "dce_rpc": 2,
+      "dhcp": 3,
+      "dns": 4,
+      "ftp": 5,
+      "ftp-data": 6,
+      "gssapi": 7,
+      "gssapi;ntlm;smb": 8,
+      "http": 9,
+      "ntlm;dce_rpc": 10,
+      "ntlm;smb;dce_rpc;gssapi": 11,
+      "ntlm;smb;gssapi": 12,
+      "smb": 13,
+      "smb;gssapi": 14,
+      "smb;ntlm;gssapi": 15,
+      "ssl": 16
+    },
+    "conn_state": {
+      "OTH": 2,
+      "REJ": 3,
+      "RSTO": 4,
+      "RSTOS0": 5,
+      "RSTR": 6,
+      "RSTRH": 7,
+      "S0": 8,
+      "S1": 9,
+      "S2": 10,
+      "S3": 11,
+      "SF": 12,
+      "SH": 13,
+      "SHR": 14
+    },
+    "dns_qclass": {
+      "0": 2,
+      "1": 3,
+      "32769": 4
+    },
+    "dns_qtype": {
+      "0": 2,
+      "1": 3,
+      "12": 4,
+      "16": 5,
+      "2": 6,
+      "255": 7,
+      "28": 8,
+      "32": 9,
+      "33": 10,
+      "43": 11,
+      "48": 12,
+      "6": 13
+    },
+    "dns_rcode": {
+      "0": 2,
+      "1": 3,
+      "2": 4,
+      "3": 5,
+      "5": 6
+    },
+    "http_status_code": {
+      "0": 2,
+      "200": 3,
+      "301": 4,
+      "302": 5,
+      "400": 6,
+      "403": 7,
+      "404": 8
+    }
+  },
+  "category_codes": {
+    "missing": 0,
+    "unknown": 1,
+    "known_start": 2
+  },
+  "boolean_mapping": {
+    "F": 0,
+    "T": 1,
+    "missing": 2
+  },
+  "category_warning": "Category/Boolean codes are discrete identifiers, not continuous adversarial variables; never scaled.",
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scikit_learn": "1.9.1"
+  },
+  "source_files": [
+    {
+      "file": "Network_dataset_17.csv",
+      "source_path": "dataset/Network_dataset_17.csv",
+      "rows": 1000000,
+      "sha256": "d933a39088804258386441d83e4dec29ad14b97378b2a216f9919b0f5180143a",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 966289,
+        "0": 33711
+      },
+      "type_distribution": {
+        "ddos": 966289,
+        "normal": 33711
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 911240,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 946055,
+        "dns_RD": 946055,
+        "dns_RA": 946055,
+        "dns_rejected": 946055
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_18.csv",
+      "source_path": "dataset/Network_dataset_18.csv",
+      "rows": 1000000,
+      "sha256": "32d04d9cfefee40774e979c600ec322e2da6518bb6d8974999075007794c3934",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 950564,
+        "0": 49436
+      },
+      "type_distribution": {
+        "ddos": 563440,
+        "normal": 49436,
+        "password": 387124
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 696542,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 960136,
+        "dns_RD": 960136,
+        "dns_RA": 960136,
+        "dns_rejected": 960136
+      },
+      "within_file_duplicate_excess": 82113,
+      "global_duplicate_excess_attributed_to_file": 82113
+    },
+    {
+      "file": "Network_dataset_19.csv",
+      "source_path": "dataset/Network_dataset_19.csv",
+      "rows": 1000000,
+      "sha256": "162203394dc41b3020bdc70b99e213f620fd66bacd333dbdf1cd5279adbd5f5d",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 987292,
+        "0": 12708
+      },
+      "type_distribution": {
+        "password": 987292,
+        "normal": 12708
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 222800,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 996793,
+        "dns_RD": 996793,
+        "dns_RA": 996793,
+        "dns_rejected": 996793
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_20.csv",
+      "source_path": "dataset/Network_dataset_20.csv",
+      "rows": 1000000,
+      "sha256": "ca793a8ff6860c2a8b8e8b4bc72271bbbfc011b0b6c523765658949e1513fd0f",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 978918,
+        "0": 21082
+      },
+      "type_distribution": {
+        "password": 344152,
+        "normal": 21082,
+        "xss": 634766
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 144166,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 818669,
+        "dns_RD": 818669,
+        "dns_RA": 818669,
+        "dns_rejected": 818669
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_21.csv",
+      "source_path": "dataset/Network_dataset_21.csv",
+      "rows": 1000000,
+      "sha256": "63fe9f2c91c48c0f30721eda03864675e1d87103a36cd61c19a3ac68d8ac077b",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 985593,
+        "0": 14407
+      },
+      "type_distribution": {
+        "xss": 985593,
+        "normal": 14407
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 35763,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 714036,
+        "dns_RD": 714036,
+        "dns_RA": 714036,
+        "dns_rejected": 714036
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_22.csv",
+      "source_path": "dataset/Network_dataset_22.csv",
+      "rows": 1000000,
+      "sha256": "a1f6009f2be53bc1fba90f044d07ff5a9c5cfe4912b56690d8f02fb75aa335c0",
+      "invalid_src_bytes": 690,
+      "label_distribution": {
+        "1": 765012,
+        "0": 234988
+      },
+      "type_distribution": {
+        "xss": 488585,
+        "normal": 234988,
+        "ransomware": 72805,
+        "backdoor": 203622
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 690,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 479393,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 847431,
+        "dns_RD": 847431,
+        "dns_RA": 847431,
+        "dns_rejected": 847431
+      },
+      "within_file_duplicate_excess": 141289,
+      "global_duplicate_excess_attributed_to_file": 141289
+    },
+    {
+      "file": "Network_dataset_23(in).csv",
+      "source_path": "dataset/Network_dataset_23(in).csv",
+      "rows": 339021,
+      "sha256": "8b1f13f87149ab423d15d6f76bfdf2c5cc454d68024fc7445dfcfaa499c94d8c",
+      "invalid_src_bytes": 4,
+      "label_distribution": {
+        "1": 305546,
+        "0": 33475
+      },
+      "type_distribution": {
+        "backdoor": 304494,
+        "normal": 33475,
+        "mitm": 1052
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 4,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 319576,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 327910,
+        "dns_RD": 327910,
+        "dns_RA": 327910,
+        "dns_rejected": 327910
+      },
+      "within_file_duplicate_excess": 2717,
+      "global_duplicate_excess_attributed_to_file": 2717
+    }
+  ],
+  "total_fitted_rows": 6339021,
+  "duplicates": {
+    "definition": "Exact equality of all 46 parsed raw string fields, before cleaning, including targets/ts/IPs; CSV quoting differences ignored, whitespace preserved. Full JSON row keys in SQLite avoid hash collisions.",
+    "duplicate_excess_rows": 226119,
+    "duplicate_percentage": 3.567096559547602,
+    "unique_raw_records": 6112902,
+    "rows_in_duplicate_groups": 279041,
+    "cross_file_duplicate_groups": 0,
+    "rows_in_cross_file_groups": 0,
+    "duplicate_excess_by_type": {
+      "backdoor": 2731,
+      "ddos": 82113,
+      "mitm": 9,
+      "normal": 100675,
+      "password": 0,
+      "ransomware": 40591,
+      "xss": 0
+    },
+    "by_file_note": "Within-file excess counts local repeats; global excess is attributed to later occurrences in supplied file order. Cross-file group rows include all occurrences.",
+    "removed_rows": 0,
+    "retained": true
+  },
+  "invalid_src_bytes_count": 694
+}

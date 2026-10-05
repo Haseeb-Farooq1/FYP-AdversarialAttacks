@@ -1,0 +1,205 @@
+{
+  "status": "passed",
+  "files": [
+    {
+      "file": "Network_dataset_17.csv",
+      "input_rows": 1000000,
+      "output_rows": 1000000,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 0,
+      "output_bytes": 270628809,
+      "label_distribution": {
+        "1": 966289,
+        "0": 33711
+      },
+      "type_distribution": {
+        "ddos": 966289,
+        "normal": 33711
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    },
+    {
+      "file": "Network_dataset_18.csv",
+      "input_rows": 1000000,
+      "output_rows": 1000000,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 0,
+      "output_bytes": 271506425,
+      "label_distribution": {
+        "1": 950564,
+        "0": 49436
+      },
+      "type_distribution": {
+        "ddos": 563440,
+        "normal": 49436,
+        "password": 387124
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    },
+    {
+      "file": "Network_dataset_19.csv",
+      "input_rows": 1000000,
+      "output_rows": 1000000,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 0,
+      "output_bytes": 272267774,
+      "label_distribution": {
+        "1": 987292,
+        "0": 12708
+      },
+      "type_distribution": {
+        "password": 987292,
+        "normal": 12708
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    },
+    {
+      "file": "Network_dataset_20.csv",
+      "input_rows": 1000000,
+      "output_rows": 1000000,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 0,
+      "output_bytes": 269518196,
+      "label_distribution": {
+        "1": 978918,
+        "0": 21082
+      },
+      "type_distribution": {
+        "password": 344152,
+        "normal": 21082,
+        "xss": 634766
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    },
+    {
+      "file": "Network_dataset_21.csv",
+      "input_rows": 1000000,
+      "output_rows": 1000000,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 0,
+      "output_bytes": 267901633,
+      "label_distribution": {
+        "1": 985593,
+        "0": 14407
+      },
+      "type_distribution": {
+        "xss": 985593,
+        "normal": 14407
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    },
+    {
+      "file": "Network_dataset_22.csv",
+      "input_rows": 1000000,
+      "output_rows": 1000000,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 690,
+      "output_bytes": 270251319,
+      "label_distribution": {
+        "1": 765012,
+        "0": 234988
+      },
+      "type_distribution": {
+        "xss": 488585,
+        "normal": 234988,
+        "ransomware": 72805,
+        "backdoor": 203622
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    },
+    {
+      "file": "Network_dataset_23(in).csv",
+      "input_rows": 339021,
+      "output_rows": 339021,
+      "retention_percent": 100,
+      "columns": 25,
+      "invalid_src_bytes": 4,
+      "output_bytes": 92242350,
+      "label_distribution": {
+        "1": 305546,
+        "0": 33475
+      },
+      "type_distribution": {
+        "backdoor": 304494,
+        "normal": 33475,
+        "mitm": 1052
+      },
+      "raw_sha256_unchanged": true,
+      "config_reload_matches_all_rows": true
+    }
+  ],
+  "rows_validated": 6339021,
+  "predictors": 23,
+  "output_columns": 25,
+  "missing_predictor_values": 0,
+  "infinite_predictor_values": 0,
+  "schema_errors": 0,
+  "unexpected_boolean_values": 0,
+  "negative_log_value_violations": 0,
+  "shared_medians_independently_verified": true,
+  "shared_scaler_independently_verified": true,
+  "shared_mappings_independently_verified": true,
+  "all_output_rows_reproduced_from_saved_config": true,
+  "numerical_inverse_verified_all_rows": true,
+  "metadata_alignment_verified_all_rows": true,
+  "combined_label_distribution": {
+    "1": 5939214,
+    "0": 399807
+  },
+  "combined_type_distribution": {
+    "ddos": 1529729,
+    "normal": 399807,
+    "password": 1718568,
+    "xss": 2108944,
+    "ransomware": 72805,
+    "backdoor": 508116,
+    "mitm": 1052
+  },
+  "metadata_bytes": 266817264,
+  "validation_runtime_seconds": 290.489,
+  "protected_baseline_sha256_verified": {
+    "data_preprocessing/zainab/preprocess.py": "f416a8d8841afab140bacd880e3f4fb0b8cd1bb844d4b792d62b750384d2e269",
+    "data_preprocessing/zainab/preprocess_individual.py": "809a70b12d102ff16bfa3dff1da37ce4d4c36ba45d765f25e783e9c5b4a9f6df",
+    "data_preprocessing/zainab/test_individual.py": "83205ab6ee6d0edc69bc5a8257bde30252a66a4c5d2fcd7b5aebf36d47153511",
+    "data_preprocessing/zainab/artifacts/preprocessing_config.json": "e503e7c0769a35e8bce917d7ebba4a28e8439add42463dc5690b2a0c5760fa4d",
+    "data_preprocessing/zainab/artifacts/preprocessing_report.json": "853fe6053778134b450626a0b1aeaaf026ff468a02cfab60160c514ec6b0bbcc",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_17_config.json": "dfd7ba83e622452b378f193eef70a1c1e2e904eb13dfa4c09b216117da0c0799",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_18_config.json": "6710f0ef09a9cc4b3951d02e31aea956ca12f02f6be7447efefbf5508f39e047",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_19_config.json": "b692c73235062a6e5a6ece1042bbc5f7d7308ea5b8a627bfe84006edaeb85a33",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_20_config.json": "74340eb487561fcb6dc9f948bd715cea69fe927b0586a857e5568effb9f7db49",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_21_config.json": "743880d390714e09eb1752296c926ad28d639babdd5976c387fdcae02e6791ce",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_22_config.json": "6894bf0fc1eabd93a771ea112b3a819914344cea6acfec82d098f7ccab9b832e",
+    "data_preprocessing/zainab/artifacts/individual/Network_dataset_23(in)_config.json": "6ca583e98d60877943c708cb08934bfc4df07ca2eb992a608297491970a24d5b",
+    "data_preprocessing/zainab/artifacts/individual/preprocessing_report.json": "bb99a97840dad9964b5e59b7989ddac62f7e9bd5cafa3a1c813195cb3bd8546c"
+  },
+  "configuration_provenance_cleanup": {
+    "old_shared_config_sha256": "cfe8c5a1b266f8f43d95ccbcaa09f91a36c1cc2137908b81ee0b2255d05fefac",
+    "new_shared_config_sha256": "7278d1f6a63d6f6294beaae10f83061dbceb111e3eb4e1266d8d8eb6094528f7",
+    "reason": "Only source_path provenance changed from machine-specific absolute paths to repository-relative paths. Fitted values and transformation rules are identical; existing processed CSVs were not regenerated.",
+    "fitted_parameters_unchanged": true,
+    "processed_csv_sha256_verified": {
+      "dataset/processed_zainab_shared/metadata.csv": "b5f9ad0b4d00b17b26a13b69c03e58d1a976e5e136d9bc5e9f320b556406ece4",
+      "dataset/processed_zainab_shared/Network_dataset_17.csv": "1818be24397285686270d7a61d569fef674d60dd7f821927490b12f15f9620c4",
+      "dataset/processed_zainab_shared/Network_dataset_18.csv": "5d0b1f4b1c320d00bca4ca189da10f0080639adc09967cb28eb4fed56c45bb70",
+      "dataset/processed_zainab_shared/Network_dataset_19.csv": "263e07ee735d1774321480fc7e91c2d4813e6f8fa0473ee470722c60c005d112",
+      "dataset/processed_zainab_shared/Network_dataset_20.csv": "1e9524f79d9c790487f2d4f29112fd920d2e2ab8b51ca93595672717dd8996fe",
+      "dataset/processed_zainab_shared/Network_dataset_21.csv": "93e22272ee72f4752ef2df74f93864c2ed9542f655b27779d1e4c863ba506825",
+      "dataset/processed_zainab_shared/Network_dataset_22.csv": "2c342b871dbb445a046fb0ec93dd8b66d17dbab8bfd6d90494634b150dfaa35b",
+      "dataset/processed_zainab_shared/Network_dataset_23(in).csv": "fc4e64c60ff40435662debca72880911860b99932db19ee88151326ea46a0fe5"
+    },
+    "protected_previous_baselines_unchanged": true,
+    "raw_hashes_verified": true
+  }
+}

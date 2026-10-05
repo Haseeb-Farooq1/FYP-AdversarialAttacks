@@ -1,6 +1,128 @@
 # Zainab's compact preprocessing baseline
 
-## Independent files without splitting (current requested output)
+## Shared-fit, separate-file baseline
+
+`preprocess_shared.py` implements **selected raw files -> one shared configuration
+-> separate original-named CSVs**. The earlier individual and split implementations
+and their artifacts remain historical baselines. No model partitions, split
+assignments, or training class weights are produced by the shared mode.
+Here, shared means shared fitted parameters, not merged datasets: seven source
+files remain seven separate processed files.
+
+**Status:** files 17-23 completed and fully validated: 6,339,021 rows retained,
+23 predictors per output, 694 invalid src_bytes values handled, and 226,119
+duplicate occurrences retained. All output rows were reproduced from the saved
+configuration; 14 post-generation shared tests passed. See the shared artifacts
+and instructor report for measured results. The default output paths now exist;
+reruns require fresh output/artifact/report paths rather than overwriting them.
+
+```powershell
+.venv/Scripts/python.exe -B -m data_preprocessing.zainab.preprocess_shared --start 17 --end 23
+# Later: change only the range (all files must be present with the expected schema).
+.venv/Scripts/python.exe -B -m data_preprocessing.zainab.preprocess_shared --start 1 --end 23
+# Or pass explicit paths with --files path/to/file.csv path/to/another.csv
+# Add --write-metadata when source_file/source_row/ts audit metadata is needed.
+.venv/Scripts/python.exe -B -m unittest data_preprocessing.zainab.test_shared -v
+```
+
+The filename for 23 is `Network_dataset_23(in).csv`. Inputs must have unique
+basenames and the expected 46-column schema; unsupported schema variants stop
+with a diagnostic rather than being silently aligned. Outputs and artifact
+directories must be fresh; existing data is never overwritten.
+
+### Shared transformations
+
+The exact existing 23-feature order is preserved. For all 12 numerical columns:
+explicit cleaning -> one shared exact median imputation -> optional log1p ->
+one shared StandardScaler. Medians use all observed finite cleaned values from
+all selected files, including duplicates, written to per-column float64 disk
+files. In-place memory-mapped partition selects the middle value (or average of
+the two middle values). No sampling/approximate quantiles are used. An entirely
+missing numerical column stops processing. Working files are removed on exit.
+
+The ten log1p features are `duration`, `src_bytes`, `dst_bytes`, `missed_bytes`,
+`src_pkts`, `src_ip_bytes`, `dst_pkts`, `dst_ip_bytes`,
+`http_request_body_len`, and `http_response_body_len`. Every observed value is
+checked for nonnegativity before fitting; imputed values are checked again before
+log1p. Unexpected negatives/infinities or Boolean states cause clear errors.
+`src_bytes="0.0.0.0"` becomes missing; rows and legitimate zeros are retained.
+
+`src_port` and `dst_port` never receive log1p. Their numerical scaling is retained
+only for controlled baseline comparability: ports are discrete network identifiers,
+not physical continuous measurements. Later compare current ports, removing
+`src_port`, and categorical/bucketed `dst_port`; this implementation performs no
+port ablation. No additional feature selection is performed.
+
+One shared sorted mapping per categorical feature assigns missing=0, unknown=1,
+observed categories=2+. Booleans use F=0, T=1, missing=2. Codes are never scaled;
+they are identifiers, not continuous measurements or continuous attack variables.
+Each source uses the same fitted medians, scaler and mappings.
+
+### Duplicate audit and memory
+
+SQLite compares the full JSON serialization of all 46 parsed raw string values
+before cleaning, including targets, timestamps and IPs. File/row identity is not
+part of the key. CSV quoting differences are ignored, while whitespace and missing
+marker differences remain distinct. Full keys avoid fingerprint hash-collision
+ambiguity. Duplicate excess means occurrences beyond the first; the report also
+records rows belonging to duplicate groups, within-file excess, cross-file groups,
+and duplicate excess by attack type. Global excess attributed to a file depends
+on the supplied file order. **No duplicates are removed.**
+
+There are three chunked CSV passes (default 50,000 rows): inspection and shared
+medians/vocabularies/duplicate audit; incremental shared scaler fitting; export.
+Complete raw tables are never combined in RAM. Category vocabularies stay in RAM;
+disk working space holds numeric observations and SQLite full-row keys/indexes.
+Memory mapping uses the operating-system page cache, so resident memory is not
+guaranteed to equal chunk size. Disk space and I/O can be substantial at 23 files.
+
+### Outputs, configuration and limitations
+
+- `dataset/processed_zainab_shared/`: seven original-named model CSVs, each with
+  23 predictors plus unscaled `label` and `type` (25 columns).
+- Optional `metadata.csv` with `--write-metadata`: `source_file`, `source_row`
+  (one-based parsed record number, excluding the header), and original `ts`.
+  Default runs do not write metadata. The existing full-run metadata file remains
+  local and unchanged. Metadata never enters X.
+- `data_preprocessing/zainab/artifacts/shared/`: `preprocessing_config.json`,
+  `preprocessing_report.json`, `feature_metadata.json`, plus full-run validation
+  evidence in `validation_report.json`. Test summaries are consolidated in
+  `preprocessing_report.json`.
+- `reports/zainab_shared_preprocessing_report.md`: instructor-facing report.
+
+Large outputs/working files and instructor reports are ignored; code and small
+JSON artifacts are not. Source hashes are verified after export. Failed runs may
+leave incomplete output directories; they do not create a successful final report.
+Use fresh paths after a failure rather than overwriting previous runs.
+Source provenance uses repository-relative paths (basenames for external inputs),
+with content hashes identifying inputs. Existing shared config paths were made
+portable without changing fitted parameters; the corresponding digest migration
+is documented in `validation_report.json`.
+
+`SharedPreprocessor.from_config` reloads the frozen shared transform. Call
+`checked_clean` before `transform`. `inverse_numerical` reverses scaling and
+log1p into imputed raw units, not original missingness; it does not establish
+attack validity. `decode_categories` uses reverse mappings and rejects invalid
+or fractional codes. Feature metadata records observed ranges/types and uses
+`review_required` for adversarial mutability; observed maxima are not asserted
+as universal limits.
+
+This shared preprocessing baseline fits transformation parameters using the selected preprocessing dataset as a whole. It is intended for preprocessing development and pipeline comparison. Before final model evaluation, raw records must first be divided into training/validation/test sets and all learned preprocessing parameters must be refitted using training data only.
+
+For future evaluation, isolate duplicate/related flows and use identical raw
+records, splits, classifier, hyperparameters and random seed across pipelines.
+Compare macro-F1, balanced accuracy, per-class precision/recall/F1, confusion
+matrix, normal false-positive rate and attack false-negative rate. Accuracy alone
+is insufficient. Adversarial evaluation follows the clean baseline. Median/log
+changes also differ from the old baseline, so an architecture-only experiment
+must keep those choices fixed. No superiority is claimed and no model is trained.
+
+The 21 dropped predictors remain excluded for the current controlled compact
+baseline, not because they are universally useless. When files 1-23 are available,
+revisit missingness, sparse HTTP/SSL/weird fields, per-class coverage, shortcuts
+and ports using the full training partition before final evaluation.
+
+## Previous independent-file baseline
 
 Run `.venv/Scripts/python.exe -B -m data_preprocessing.zainab.preprocess_individual`
 from the repository root. This mode writes seven files to

@@ -8,7 +8,10 @@ __pycache__/
 # Zainab's generated datasets and local split assignments
 /dataset/processed_zainab/
 /dataset/processed_zainab_individual/
+/dataset/processed_zainab_shared/
 
 /reports/zainab_preprocessing_report.md
 /reports/zainab_preprocessing_report.pdf
+/reports/zainab_shared_preprocessing_report.md
+/reports/zainab_shared_preprocessing_report.pdf
 
