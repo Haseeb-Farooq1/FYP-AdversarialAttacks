@@ -15,3 +15,6 @@ __pycache__/
 /reports/zainab_shared_preprocessing_report.md
 /reports/zainab_shared_preprocessing_report.pdf
 
+# Generated local model-evaluation results
+/model_evaluation/results/*.json
+
