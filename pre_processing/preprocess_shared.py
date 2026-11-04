@@ -15,7 +15,7 @@ import pandas as pd
 import sklearn
 from sklearn.preprocessing import StandardScaler
 
-from .preprocess import (
+from pre_processing.preprocess import (
     BOOLEAN_COLUMNS, CATEGORICAL_COLUMNS, EXPECTED_COLUMNS, FEATURE_COLUMNS,
     NUMERICAL_COLUMNS, PROJECT_ROOT, clean_features,
     sha256_file, validate_targets, verify_schema,
@@ -38,12 +38,19 @@ PORT_WARNING = (
 )
 
 
-def input_paths(data_dir, start=17, end=23):
+def input_paths(data_dir, start=1, end=23):
     """Filename convention only; run_shared also accepts arbitrary explicit CSV paths."""
     if not 1 <= start <= end <= 23:
         raise ValueError("Expected 1 <= start <= end <= 23")
-    return [Path(data_dir) / (f"Network_dataset_{i}.csv" if i != 23
-                             else "Network_dataset_23(in).csv") for i in range(start, end + 1)]
+    paths = []
+    for index in range(start, end + 1):
+        if index != 23:
+            paths.append(Path(data_dir) / f"Network_dataset_{index}.csv")
+            continue
+        final_in = Path(data_dir) / "Network_dataset_23(in).csv"
+        final_plain = Path(data_dir) / "Network_dataset_23.csv"
+        paths.append(final_in if final_in.exists() or not final_plain.exists() else final_plain)
+    return paths
 
 
 def write_json(path, value):
@@ -64,7 +71,7 @@ def read_shared_chunks(paths, chunk_size, columns=None):
     if columns is None:
         columns = FEATURE_COLUMNS + ["label", "type"]
     for path in paths:
-        with pd.read_csv(path, encoding="utf-8-sig", header=0, names=EXPECTED_COLUMNS,
+        with pd.read_csv(path, encoding="utf-8-sig", header=0,
                          usecols=columns, dtype="string", na_filter=False,
                          chunksize=chunk_size, on_bad_lines="error") as reader:
             for frame in reader:
@@ -124,27 +131,6 @@ class SharedPreprocessor:
             raise ValueError("Nonfinite transformed predictor")
         return output
 
-    def inverse_numerical(self, transformed):
-        """Return imputed raw units; cannot recover missingness or enforce attack validity."""
-        a = self.scaler.inverse_transform(transformed[NUMERICAL_COLUMNS].to_numpy(dtype=np.float64))
-        with np.errstate(over="raise", invalid="raise"):
-            for c in LOG_COLUMNS:
-                i = NUMERICAL_COLUMNS.index(c)
-                a[:, i] = np.expm1(a[:, i])
-        if not np.isfinite(a).all():
-            raise ValueError("Nonfinite numerical inverse")
-        return pd.DataFrame(a, columns=NUMERICAL_COLUMNS, index=transformed.index)
-
-    def decode_categories(self, transformed):
-        """Return strings for discrete valid codes; reject fractional/invalid codes."""
-        result = pd.DataFrame(index=transformed.index)
-        for c in CATEGORICAL_COLUMNS:
-            mapping = {0: "<missing>", 1: "<unknown>", **{v: k for k, v in self.mappings[c].items()}}
-            if not transformed[c].isin(mapping).all():
-                raise ValueError(f"{c}: invalid discrete category code")
-            result[c] = transformed[c].map(mapping)
-        return result
-
     def to_config(self):
         return {
             "format_version": 1, "mode": "shared_fit_separate_files",
@@ -171,22 +157,6 @@ class SharedPreprocessor:
             "category_warning": "Category/Boolean codes are discrete identifiers, not continuous adversarial variables; never scaled.",
             "versions": {"numpy": np.__version__, "pandas": pd.__version__, "scikit_learn": sklearn.__version__},
         }
-
-    @classmethod
-    def from_config(cls, config):
-        if (config["feature_columns"] != FEATURE_COLUMNS or config["log1p_columns"] != LOG_COLUMNS
-                or config["numerical_columns"] != NUMERICAL_COLUMNS or config["format_version"] != 1):
-            raise ValueError("Unsupported shared feature order/transformation configuration")
-        result = cls()
-        result.medians = np.array([config["numeric_imputation_medians"][c] for c in NUMERICAL_COLUMNS])
-        result.mappings = config["category_mappings"]
-        result.observed = config["observed_numerical"]
-        for attr, key in [("mean_", "mean"), ("scale_", "scale"), ("var_", "var")]:
-            setattr(result.scaler, attr, np.array(config["standard_scaler"][key]))
-        result.scaler.n_samples_seen_ = config["standard_scaler"]["fitted_rows"]
-        result.scaler.n_features_in_ = len(NUMERICAL_COLUMNS)
-        return result
-
 
 def exact_disk_median(path):
     count = path.stat().st_size // np.dtype("float64").itemsize
@@ -320,29 +290,20 @@ def make_report(report):
         rows.append(f"| {f['file']} | {f['rows']:,} | {f['output_rows']:,} | 100% | {f['invalid_src_bytes']:,} |")
     rows += ["", f"Output missing values: 0; infinite values: 0. Runtime: {report['runtime_seconds']} seconds.",
              "", "## Exact duplicates (retained)", "", json.dumps(report["duplicates"], indent=2), "",
-             "Per-file and per-type class distributions, missing counts and duplicate attribution are in preprocessing_report.json. "
-             "Raw hashes are checked before and after processing. When requested, separate metadata.csv links output rows to source_file, "
-             "source_row (one-based parsed data record), and raw ts. No metadata enters model X.", "",
+             "Per-file class distributions and missing counts are in preprocessing_report.json. "
+             "Raw hashes are checked before and after processing.", "",
              "## Reproducibility and memory", "",
              "Numerical observations are spooled to disk by column. Exact float64 medians use in-place disk-backed partition, "
              "not sampling. SQLite compares full serialized raw rows for exact duplicates. Reads/writes are chunked; "
              "category sets remain in memory. Disk-backed work files are temporary. Shared parameters and source hashes "
-             "are persisted. Inverse numerical transforms recover imputed raw units, not original missingness.", "",
-             "## Limitations and future comparison", "",
-             "Duplicates are retained; isolate related/duplicate records when constructing final evaluation splits. "
-             "Category codes are discrete, not continuous attack variables. Mutability requires review. "
-             "The fixed feature selection supports a compact comparison, not a claim that the 21 excluded features are useless. "
-             "Median/log changes also differ from the old baseline; an architecture-only comparison must hold those choices fixed.", "",
-             "For final comparison use the same raw records, split assignments, classifier, hyperparameters and random seed, "
-             "refitting each preprocessing method on training only. Report macro-F1, balanced accuracy, per-class "
-             "precision/recall/F1, confusion matrix, normal false-positive rate and attack false-negative rate. "
-             "Do not use accuracy alone. Evaluate adversarial robustness after the clean baseline.", "",
-             "When files 1-23 are available, revisit missing rates, sparse HTTP/SSL/weird fields, class-specific coverage, "
-             "shortcut features and port ablations using the full training partition. No feature redesign or model training is performed here."]
+             "are persisted.", "",
+             "## Processing notes", "",
+             "Duplicate rows are retained and no dataset split is performed. Category and Boolean codes are discrete identifiers. "
+             "The fixed feature selection creates a compact 23-predictor baseline; it does not assert that excluded features are universally useless."]
     return "\n".join(rows) + "\n"
 
 
-def run_shared(paths, output_dir, artifact_dir, report_path, chunk_size=50000, write_metadata=False):
+def run_shared(paths, output_dir, artifact_dir, report_path, chunk_size=50000):
     """Three CSV passes: shared inspection/medians, shared scaler, separate exports."""
     started = time.perf_counter()
     paths = [Path(p).resolve() for p in paths]
@@ -351,15 +312,18 @@ def run_shared(paths, output_dir, artifact_dir, report_path, chunk_size=50000, w
         raise ValueError("Supply input files and a positive chunk_size")
     if len({p.name.casefold() for p in paths}) != len(paths):
         raise ValueError("Input basenames must be unique")
-    if any(p.name.casefold() == "metadata.csv" for p in paths):
-        raise ValueError("metadata.csv is reserved for the separate audit output")
     for p in paths:
         verify_schema(p)
     if output_dir.resolve() == artifact_dir.resolve():
-        raise ValueError("Use separate output and artifact directories")
-    # Refuse overwrite, including all earlier baselines and source directories.
-    if output_dir.exists() or artifact_dir.exists() or report_path.exists():
-        raise FileExistsError("Use fresh output/artifact directories and a fresh report path")
+        raise ValueError("Output CSVs and preprocessing artifacts must use separate paths")
+    artifact_paths = [
+        artifact_dir / "preprocessing_config.json",
+        artifact_dir / "preprocessing_report.json",
+        artifact_dir / "feature_metadata.json",
+        report_path,
+    ]
+    if output_dir.exists() or any(path.exists() for path in artifact_paths):
+        raise FileExistsError("Outputs already exist; choose fresh output and report paths")
     processor = SharedPreprocessor()
     output_dir.mkdir(parents=True)
     with tempfile.TemporaryDirectory(prefix=".shared-work-", dir=output_dir) as work:
@@ -374,23 +338,15 @@ def run_shared(paths, output_dir, artifact_dir, report_path, chunk_size=50000, w
     config.update(source_files=json.loads(json.dumps(manifests)), total_fitted_rows=total, duplicates=duplicates,
                   invalid_src_bytes_count=sum(f["invalid_src_bytes"] for f in manifests))
     config_digest = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
-    metadata_path = output_dir / "metadata.csv"
-    metadata_rows = 0
     for path, stats in zip(paths, manifests):
         print(f"Writing {path.name} using shared configuration", flush=True)
         count = 0
-        columns = FEATURE_COLUMNS + ["label", "type"] + (["ts"] if write_metadata else [])
+        columns = FEATURE_COLUMNS + ["label", "type"]
         for _, raw in read_shared_chunks([path], chunk_size, columns):
             result = processor.transform(checked_clean(raw, path.name))
             label, attack = validate_targets(raw)
             result["label"], result["type"] = label, attack
             result.to_csv(output_dir / path.name, index=False, mode="a" if count else "w", header=count == 0)
-            if write_metadata:
-                metadata = pd.DataFrame({"source_file": path.name,
-                                         "source_row": np.arange(count + 1, count + len(raw) + 1),
-                                         "ts": raw.ts.to_numpy()})
-                metadata.to_csv(metadata_path, index=False, mode="a" if metadata_rows else "w", header=metadata_rows == 0)
-                metadata_rows += len(raw)
             count += len(raw)
         if count != stats["rows"] or sha256_file(path) != stats["sha256"]:
             raise ValueError(f"{path.name}: raw file changed during processing")
@@ -404,9 +360,9 @@ def run_shared(paths, output_dir, artifact_dir, report_path, chunk_size=50000, w
               "dropped_columns": DROPPED_COLUMNS, "duplicates": duplicates,
               "invalid_src_bytes_count": config["invalid_src_bytes_count"],
               "missing_after_preprocessing": 0, "nonfinite_after_preprocessing": 0,
-              "metadata_written": write_metadata, "metadata_rows": metadata_rows, "chunk_size": chunk_size,
+              "chunk_size": chunk_size,
               "runtime_seconds": round(time.perf_counter() - started, 3)}
-    artifact_dir.mkdir(parents=True)
+    artifact_dir.mkdir(parents=True, exist_ok=True)
     write_json(artifact_dir / "preprocessing_config.json", config)
     write_json(artifact_dir / "preprocessing_report.json", report)
     write_json(artifact_dir / "feature_metadata.json", feature_metadata(processor))
@@ -418,18 +374,17 @@ def run_shared(paths, output_dir, artifact_dir, report_path, chunk_size=50000, w
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path, default=PROJECT_ROOT / "dataset")
+    parser.add_argument("--data-dir", type=Path, default=PROJECT_ROOT / "Raw_DATASET")
     parser.add_argument("--files", type=Path, nargs="+", help="Explicit input paths; overrides start/end range")
-    parser.add_argument("--start", type=int, default=17)
+    parser.add_argument("--start", type=int, default=1)
     parser.add_argument("--end", type=int, default=23)
-    parser.add_argument("--output-dir", type=Path, default=PROJECT_ROOT / "dataset/processed_zainab_shared")
-    parser.add_argument("--artifact-dir", type=Path, default=Path(__file__).parent / "artifacts/shared")
-    parser.add_argument("--report-path", type=Path, default=PROJECT_ROOT / "reports/zainab_shared_preprocessing_report.md")
+    parser.add_argument("--output-dir", type=Path, default=PROJECT_ROOT / "pre_processed")
+    parser.add_argument("--artifact-dir", type=Path, default=PROJECT_ROOT / "pre_processing")
+    parser.add_argument("--report-path", type=Path, default=PROJECT_ROOT / "pre_processing" / "preprocessing_summary.md")
     parser.add_argument("--chunk-size", type=int, default=50000)
-    parser.add_argument("--write-metadata", action="store_true", help="Also write source_file/source_row/ts audit metadata")
     args = parser.parse_args()
     run_shared(args.files or input_paths(args.data_dir, args.start, args.end), args.output_dir,
-               args.artifact_dir, args.report_path, args.chunk_size, write_metadata=args.write_metadata)
+               args.artifact_dir, args.report_path, args.chunk_size)
 
 
 if __name__ == "__main__":

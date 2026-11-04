@@ -1,0 +1,1477 @@
+{
+  "format_version": 1,
+  "mode": "shared_fit_separate_files",
+  "fit_scope": "all_selected_preprocessing_files",
+  "fit_warning": "This shared preprocessing baseline fits transformation parameters using the selected preprocessing dataset as a whole. It is intended for preprocessing development and pipeline comparison. Before final model evaluation, raw records must first be divided into training/validation/test sets and all learned preprocessing parameters must be refitted using training data only.",
+  "split_performed": false,
+  "feature_columns": [
+    "src_port",
+    "dst_port",
+    "proto",
+    "service",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "conn_state",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected",
+    "http_request_body_len",
+    "http_response_body_len",
+    "http_status_code"
+  ],
+  "numerical_columns": [
+    "src_port",
+    "dst_port",
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "categorical_columns": [
+    "proto",
+    "service",
+    "conn_state",
+    "dns_qclass",
+    "dns_qtype",
+    "dns_rcode",
+    "http_status_code"
+  ],
+  "boolean_columns": [
+    "dns_AA",
+    "dns_RD",
+    "dns_RA",
+    "dns_rejected"
+  ],
+  "dropped_columns": [
+    "ts",
+    "src_ip",
+    "dst_ip",
+    "dns_query",
+    "ssl_version",
+    "ssl_cipher",
+    "ssl_resumed",
+    "ssl_established",
+    "ssl_subject",
+    "ssl_issuer",
+    "http_trans_depth",
+    "http_method",
+    "http_uri",
+    "http_referrer",
+    "http_version",
+    "http_user_agent",
+    "http_orig_mime_types",
+    "http_resp_mime_types",
+    "weird_name",
+    "weird_addl",
+    "weird_notice"
+  ],
+  "feature_selection_note": "Fixed 23-feature compact baseline, not a claim that excluded features are universally useless.",
+  "numeric_imputation_medians": {
+    "src_port": 43425.0,
+    "dst_port": 443.0,
+    "duration": 0.000202,
+    "src_bytes": 0.0,
+    "dst_bytes": 0.0,
+    "missed_bytes": 0.0,
+    "src_pkts": 1.0,
+    "src_ip_bytes": 48.0,
+    "dst_pkts": 1.0,
+    "dst_ip_bytes": 40.0,
+    "http_request_body_len": 0.0,
+    "http_response_body_len": 0.0
+  },
+  "cleaning": {
+    "strip_whitespace": true,
+    "missing_markers": [
+      "",
+      "-"
+    ],
+    "src_bytes_invalid_as_missing": [
+      "0.0.0.0"
+    ],
+    "other_invalid_numeric": "error",
+    "unexpected_boolean": "error",
+    "preserve_legitimate_zeros": true
+  },
+  "median_method": "Exact median of all observed finite cleaned float64 values; disk-backed per-column in-place partition, no sampling.",
+  "log1p_columns": [
+    "duration",
+    "src_bytes",
+    "dst_bytes",
+    "missed_bytes",
+    "src_pkts",
+    "src_ip_bytes",
+    "dst_pkts",
+    "dst_ip_bytes",
+    "http_request_body_len",
+    "http_response_body_len"
+  ],
+  "port_warning": "Ports are discrete network identifiers, not physical continuous measurements. Scaling is retained for baseline comparability and has limited semantic meaning. Later compare current ports, removing src_port, and categorical/bucketed dst_port.",
+  "log1p_nonnegativity_verified": {
+    "duration": true,
+    "src_bytes": true,
+    "dst_bytes": true,
+    "missed_bytes": true,
+    "src_pkts": true,
+    "src_ip_bytes": true,
+    "dst_pkts": true,
+    "dst_ip_bytes": true,
+    "http_request_body_len": true,
+    "http_response_body_len": true
+  },
+  "transformation_order": [
+    "explicit numeric cleaning",
+    "shared median imputation",
+    "log1p on configured non-port columns",
+    "shared StandardScaler"
+  ],
+  "observed_numerical": {
+    "src_port": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 65535.0,
+      "integer_valued": true
+    },
+    "dst_port": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 65535.0,
+      "integer_valued": true
+    },
+    "duration": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 93516.92917,
+      "integer_valued": false
+    },
+    "src_bytes": {
+      "count": 22338152,
+      "min": 0.0,
+      "max": 4235247842.0,
+      "integer_valued": true
+    },
+    "dst_bytes": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 6172672507.0,
+      "integer_valued": true
+    },
+    "missed_bytes": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 5172970343.0,
+      "integer_valued": true
+    },
+    "src_pkts": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 2570179.0,
+      "integer_valued": true
+    },
+    "src_ip_bytes": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 1053479123.0,
+      "integer_valued": true
+    },
+    "dst_pkts": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 3238855.0,
+      "integer_valued": true
+    },
+    "dst_ip_bytes": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 175198694.0,
+      "integer_valued": true
+    },
+    "http_request_body_len": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 2338.0,
+      "integer_valued": true
+    },
+    "http_response_body_len": {
+      "count": 22339021,
+      "min": 0.0,
+      "max": 13424384.0,
+      "integer_valued": true
+    }
+  },
+  "standard_scaler": {
+    "mean": [
+      38276.40887033501,
+      6539.734312528742,
+      0.6249689468778713,
+      1.3833903337604592,
+      1.5497146796135577,
+      0.03886405645578121,
+      1.078180989787286,
+      4.588766251043547,
+      0.8007584086060641,
+      3.605813221511956,
+      0.00028931608467606685,
+      0.0018436638603390226
+    ],
+    "scale": [
+      19330.481085607964,
+      14044.301356241067,
+      1.3762762209495727,
+      2.569071971030001,
+      2.865010106267868,
+      0.5286555669127516,
+      0.6178103557342354,
+      1.3277839413158081,
+      0.6664485134040962,
+      2.5195486132212945,
+      0.03314960813954624,
+      0.11242935946999985
+    ],
+    "var": [
+      373667499.00104725,
+      197242400.58491468,
+      1.8941362363512373,
+      6.600130792331973,
+      8.208282909017022,
+      0.2794767084278428,
+      0.38168963565246244,
+      1.7630101948161414,
+      0.44415362101852973,
+      6.348125214385349,
+      0.0010988965198054704,
+      0.012640360870834446
+    ],
+    "fitted_rows": 22339021
+  },
+  "category_mappings": {
+    "proto": {
+      "icmp": 2,
+      "tcp": 3,
+      "udp": 4
+    },
+    "service": {
+      "dce_rpc": 2,
+      "dce_rpc;gssapi;smb;ntlm": 3,
+      "dce_rpc;ntlm": 4,
+      "dhcp": 5,
+      "dns": 6,
+      "ftp": 7,
+      "ftp-data": 8,
+      "gssapi": 9,
+      "gssapi;dce_rpc;smb": 10,
+      "gssapi;dce_rpc;smb;ntlm": 11,
+      "gssapi;ntlm": 12,
+      "gssapi;ntlm;smb": 13,
+      "gssapi;smb": 14,
+      "gssapi;smb;ntlm": 15,
+      "http": 16,
+      "imap": 17,
+      "imap;ssl": 18,
+      "irc": 19,
+      "krb_tcp": 20,
+      "ntlm;dce_rpc": 21,
+      "ntlm;gssapi;smb": 22,
+      "ntlm;smb;dce_rpc;gssapi": 23,
+      "ntlm;smb;gssapi": 24,
+      "pop3": 25,
+      "pop3;ssl": 26,
+      "radius": 27,
+      "rfb": 28,
+      "smb": 29,
+      "smb;dce_rpc;gssapi;ntlm": 30,
+      "smb;gssapi": 31,
+      "smb;gssapi;ntlm": 32,
+      "smb;ntlm;gssapi": 33,
+      "smtp": 34,
+      "smtp;ssl": 35,
+      "socks": 36,
+      "ssh": 37,
+      "ssl": 38,
+      "ssl;imap": 39,
+      "ssl;smtp": 40
+    },
+    "conn_state": {
+      "OTH": 2,
+      "REJ": 3,
+      "RSTO": 4,
+      "RSTOS0": 5,
+      "RSTR": 6,
+      "RSTRH": 7,
+      "S0": 8,
+      "S1": 9,
+      "S2": 10,
+      "S3": 11,
+      "SF": 12,
+      "SH": 13,
+      "SHR": 14
+    },
+    "dns_qclass": {
+      "0": 2,
+      "1": 3,
+      "26880": 4,
+      "3": 5,
+      "32769": 6
+    },
+    "dns_qtype": {
+      "0": 2,
+      "1": 3,
+      "12": 4,
+      "16": 5,
+      "2": 6,
+      "255": 7,
+      "27136": 8,
+      "28": 9,
+      "32": 10,
+      "33": 11,
+      "43": 12,
+      "48": 13,
+      "6": 14
+    },
+    "dns_rcode": {
+      "0": 2,
+      "1": 3,
+      "2": 4,
+      "3": 5,
+      "5": 6
+    },
+    "http_status_code": {
+      "0": 2,
+      "101": 3,
+      "200": 4,
+      "206": 5,
+      "301": 6,
+      "302": 7,
+      "304": 8,
+      "400": 9,
+      "403": 10,
+      "404": 11
+    }
+  },
+  "category_codes": {
+    "missing": 0,
+    "unknown": 1,
+    "known_start": 2
+  },
+  "boolean_mapping": {
+    "F": 0,
+    "T": 1,
+    "missing": 2
+  },
+  "category_warning": "Category/Boolean codes are discrete identifiers, not continuous adversarial variables; never scaled.",
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scikit_learn": "1.9.1"
+  },
+  "source_files": [
+    {
+      "file": "Network_dataset_1.csv",
+      "source_path": "Raw_DATASET/Network_dataset_1.csv",
+      "rows": 1000000,
+      "sha256": "37ea5238fcd2a7a18574b8e37e0427086c6c34d03a22f690256fc925946c0448",
+      "invalid_src_bytes": 175,
+      "label_distribution": {
+        "0": 208679,
+        "1": 791321
+      },
+      "type_distribution": {
+        "normal": 208679,
+        "scanning": 791321
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 175,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 935866,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 959032,
+        "dns_RD": 959032,
+        "dns_RA": 959032,
+        "dns_rejected": 959032
+      },
+      "within_file_duplicate_excess": 6425,
+      "global_duplicate_excess_attributed_to_file": 6425
+    },
+    {
+      "file": "Network_dataset_2.csv",
+      "source_path": "Raw_DATASET/Network_dataset_2.csv",
+      "rows": 1000000,
+      "sha256": "63b70bb96a95499b477b890674b74cc207ccb638b68ea4cc3a3dea9a448772c1",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 994283,
+        "0": 5717
+      },
+      "type_distribution": {
+        "scanning": 994283,
+        "normal": 5717
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 958607,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 995027,
+        "dns_RD": 995027,
+        "dns_RA": 995027,
+        "dns_rejected": 995027
+      },
+      "within_file_duplicate_excess": 1,
+      "global_duplicate_excess_attributed_to_file": 1
+    },
+    {
+      "file": "Network_dataset_3.csv",
+      "source_path": "Raw_DATASET/Network_dataset_3.csv",
+      "rows": 1000000,
+      "sha256": "7c8710722f26679c5d795b60019975945a81730934c768083261e66e3b1ee366",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 997180,
+        "0": 2820
+      },
+      "type_distribution": {
+        "scanning": 997180,
+        "normal": 2820
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 996842,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 997889,
+        "dns_RD": 997889,
+        "dns_RA": 997889,
+        "dns_rejected": 997889
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_4.csv",
+      "source_path": "Raw_DATASET/Network_dataset_4.csv",
+      "rows": 1000000,
+      "sha256": "a20b2aed18fa474681f3614d35d4a23554272d6424cf6148596015440fb84a91",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 993744,
+        "0": 6256
+      },
+      "type_distribution": {
+        "scanning": 993744,
+        "normal": 6256
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 984799,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 994789,
+        "dns_RD": 994789,
+        "dns_RA": 994789,
+        "dns_rejected": 994789
+      },
+      "within_file_duplicate_excess": 2,
+      "global_duplicate_excess_attributed_to_file": 2
+    },
+    {
+      "file": "Network_dataset_5.csv",
+      "source_path": "Raw_DATASET/Network_dataset_5.csv",
+      "rows": 1000000,
+      "sha256": "2cfccfbc2816418b49ab8bf26bcd45f0a4796f634512f7e5dff9def7b601778e",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 996343,
+        "0": 3657
+      },
+      "type_distribution": {
+        "scanning": 996343,
+        "normal": 3657
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 993306,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 997049,
+        "dns_RD": 997049,
+        "dns_RA": 997049,
+        "dns_rejected": 997049
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_6.csv",
+      "source_path": "Raw_DATASET/Network_dataset_6.csv",
+      "rows": 1000000,
+      "sha256": "e8aa726d8551ffe59ea816bb1199455c0ebd53f44993a8bbec67ef0843bab229",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 986527,
+        "0": 13473
+      },
+      "type_distribution": {
+        "scanning": 986527,
+        "normal": 13473
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 974387,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 992230,
+        "dns_RD": 992230,
+        "dns_RA": 992230,
+        "dns_rejected": 992230
+      },
+      "within_file_duplicate_excess": 2,
+      "global_duplicate_excess_attributed_to_file": 2
+    },
+    {
+      "file": "Network_dataset_7.csv",
+      "source_path": "Raw_DATASET/Network_dataset_7.csv",
+      "rows": 1000000,
+      "sha256": "e5d3303520909b2e90e57199aa2159f8b2bef287b56502f453df2a6407ca39ab",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 992501,
+        "0": 7499
+      },
+      "type_distribution": {
+        "scanning": 992501,
+        "normal": 7499
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 986254,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 994444,
+        "dns_RD": 994444,
+        "dns_RA": 994444,
+        "dns_rejected": 994444
+      },
+      "within_file_duplicate_excess": 1,
+      "global_duplicate_excess_attributed_to_file": 1
+    },
+    {
+      "file": "Network_dataset_8.csv",
+      "source_path": "Raw_DATASET/Network_dataset_8.csv",
+      "rows": 1000000,
+      "sha256": "485c53e676016c730018ec51ef885efa584546f6930035c75876b5ba520814be",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 978694,
+        "0": 21306
+      },
+      "type_distribution": {
+        "scanning": 388262,
+        "normal": 21306,
+        "dos": 590432
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 953415,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 977631,
+        "dns_RD": 977631,
+        "dns_RA": 977631,
+        "dns_rejected": 977631
+      },
+      "within_file_duplicate_excess": 278957,
+      "global_duplicate_excess_attributed_to_file": 278957
+    },
+    {
+      "file": "Network_dataset_9.csv",
+      "source_path": "Raw_DATASET/Network_dataset_9.csv",
+      "rows": 1000000,
+      "sha256": "ed86e18cd03c6b9e1963964e400a04c4b7684356f2ca7d3acca172c942c4dfba",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 975261,
+        "0": 24739
+      },
+      "type_distribution": {
+        "dos": 975261,
+        "normal": 24739
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 973594,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 974524,
+        "dns_RD": 974524,
+        "dns_RA": 974524,
+        "dns_rejected": 974524
+      },
+      "within_file_duplicate_excess": 453801,
+      "global_duplicate_excess_attributed_to_file": 453820
+    },
+    {
+      "file": "Network_dataset_10.csv",
+      "source_path": "Raw_DATASET/Network_dataset_10.csv",
+      "rows": 1000000,
+      "sha256": "c33290654db525d0f926d4bc010d27f82c615e1ba87cff0c9e87b1cff673d2ad",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 969998,
+        "0": 30002
+      },
+      "type_distribution": {
+        "dos": 969998,
+        "normal": 30002
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 971106,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 974749,
+        "dns_RD": 974749,
+        "dns_RA": 974749,
+        "dns_rejected": 974749
+      },
+      "within_file_duplicate_excess": 446731,
+      "global_duplicate_excess_attributed_to_file": 446764
+    },
+    {
+      "file": "Network_dataset_11.csv",
+      "source_path": "Raw_DATASET/Network_dataset_11.csv",
+      "rows": 1000000,
+      "sha256": "ffd77ddb051852facd348ec189cf1204a01c0cc840da312c1a440fd0d8c287cf",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 964832,
+        "0": 35168
+      },
+      "type_distribution": {
+        "dos": 839637,
+        "normal": 35168,
+        "injection": 125195
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 865649,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 972351,
+        "dns_RD": 972351,
+        "dns_RA": 972351,
+        "dns_rejected": 972351
+      },
+      "within_file_duplicate_excess": 379868,
+      "global_duplicate_excess_attributed_to_file": 379878
+    },
+    {
+      "file": "Network_dataset_12.csv",
+      "source_path": "Raw_DATASET/Network_dataset_12.csv",
+      "rows": 1000000,
+      "sha256": "80fd7d6782d4acdd9c528085d38823e1036b530c551d3b646bc7d0eeb5298512",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 967194,
+        "0": 32806
+      },
+      "type_distribution": {
+        "injection": 327464,
+        "normal": 32806,
+        "ddos": 639730
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 585320,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 932274,
+        "dns_RD": 932274,
+        "dns_RA": 932274,
+        "dns_rejected": 932274
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_13.csv",
+      "source_path": "Raw_DATASET/Network_dataset_13.csv",
+      "rows": 1000000,
+      "sha256": "fc295ee26ebee93e3ab0b0e61ae7ab567fb86c1b67cbcd1d8025944c9e5ad24c",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 999083,
+        "0": 917
+      },
+      "type_distribution": {
+        "ddos": 999083,
+        "normal": 917
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 800849,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 899556,
+        "dns_RD": 899556,
+        "dns_RA": 899556,
+        "dns_rejected": 899556
+      },
+      "within_file_duplicate_excess": 2,
+      "global_duplicate_excess_attributed_to_file": 2
+    },
+    {
+      "file": "Network_dataset_14.csv",
+      "source_path": "Raw_DATASET/Network_dataset_14.csv",
+      "rows": 1000000,
+      "sha256": "8eb759212e6b36c29478b5e45102814438b48e7929477a5bb8e734390cdc3ab0",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 999417,
+        "0": 583
+      },
+      "type_distribution": {
+        "ddos": 999417,
+        "normal": 583
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 699167,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 849106,
+        "dns_RD": 849106,
+        "dns_RA": 849106,
+        "dns_rejected": 849106
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_15.csv",
+      "source_path": "Raw_DATASET/Network_dataset_15.csv",
+      "rows": 1000000,
+      "sha256": "f7dded78b7670900cfa9c56e4b3df1c6c6f8ec3d82262c1b184af7f9d87e9f43",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 998940,
+        "0": 1060
+      },
+      "type_distribution": {
+        "ddos": 998940,
+        "normal": 1060
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 702083,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 850505,
+        "dns_RD": 850505,
+        "dns_RA": 850505,
+        "dns_rejected": 850505
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_16.csv",
+      "source_path": "Raw_DATASET/Network_dataset_16.csv",
+      "rows": 1000000,
+      "sha256": "415376cfbd6a4592b717b5e756ca5c1548d4491121e01fb0bab79555d8665cae",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 998109,
+        "0": 1891
+      },
+      "type_distribution": {
+        "ddos": 998109,
+        "normal": 1891
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 718672,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 858722,
+        "dns_RD": 858722,
+        "dns_RA": 858722,
+        "dns_rejected": 858722
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_17.csv",
+      "source_path": "Raw_DATASET/Network_dataset_17.csv",
+      "rows": 1000000,
+      "sha256": "d933a39088804258386441d83e4dec29ad14b97378b2a216f9919b0f5180143a",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 966289,
+        "0": 33711
+      },
+      "type_distribution": {
+        "ddos": 966289,
+        "normal": 33711
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 911240,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 946055,
+        "dns_RD": 946055,
+        "dns_RA": 946055,
+        "dns_rejected": 946055
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_18.csv",
+      "source_path": "Raw_DATASET/Network_dataset_18.csv",
+      "rows": 1000000,
+      "sha256": "32d04d9cfefee40774e979c600ec322e2da6518bb6d8974999075007794c3934",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 950564,
+        "0": 49436
+      },
+      "type_distribution": {
+        "ddos": 563440,
+        "normal": 49436,
+        "password": 387124
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 696542,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 960136,
+        "dns_RD": 960136,
+        "dns_RA": 960136,
+        "dns_rejected": 960136
+      },
+      "within_file_duplicate_excess": 82113,
+      "global_duplicate_excess_attributed_to_file": 82113
+    },
+    {
+      "file": "Network_dataset_19.csv",
+      "source_path": "Raw_DATASET/Network_dataset_19.csv",
+      "rows": 1000000,
+      "sha256": "162203394dc41b3020bdc70b99e213f620fd66bacd333dbdf1cd5279adbd5f5d",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 987292,
+        "0": 12708
+      },
+      "type_distribution": {
+        "password": 987292,
+        "normal": 12708
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 222800,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 996793,
+        "dns_RD": 996793,
+        "dns_RA": 996793,
+        "dns_rejected": 996793
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_20.csv",
+      "source_path": "Raw_DATASET/Network_dataset_20.csv",
+      "rows": 1000000,
+      "sha256": "ca793a8ff6860c2a8b8e8b4bc72271bbbfc011b0b6c523765658949e1513fd0f",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 978918,
+        "0": 21082
+      },
+      "type_distribution": {
+        "password": 344152,
+        "normal": 21082,
+        "xss": 634766
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 144166,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 818669,
+        "dns_RD": 818669,
+        "dns_RA": 818669,
+        "dns_rejected": 818669
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_21.csv",
+      "source_path": "Raw_DATASET/Network_dataset_21.csv",
+      "rows": 1000000,
+      "sha256": "63fe9f2c91c48c0f30721eda03864675e1d87103a36cd61c19a3ac68d8ac077b",
+      "invalid_src_bytes": 0,
+      "label_distribution": {
+        "1": 985593,
+        "0": 14407
+      },
+      "type_distribution": {
+        "xss": 985593,
+        "normal": 14407
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 35763,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 714036,
+        "dns_RD": 714036,
+        "dns_RA": 714036,
+        "dns_rejected": 714036
+      },
+      "within_file_duplicate_excess": 0,
+      "global_duplicate_excess_attributed_to_file": 0
+    },
+    {
+      "file": "Network_dataset_22.csv",
+      "source_path": "Raw_DATASET/Network_dataset_22.csv",
+      "rows": 1000000,
+      "sha256": "a1f6009f2be53bc1fba90f044d07ff5a9c5cfe4912b56690d8f02fb75aa335c0",
+      "invalid_src_bytes": 690,
+      "label_distribution": {
+        "1": 765012,
+        "0": 234988
+      },
+      "type_distribution": {
+        "xss": 488585,
+        "normal": 234988,
+        "ransomware": 72805,
+        "backdoor": 203622
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 690,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 479393,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 847431,
+        "dns_RD": 847431,
+        "dns_RA": 847431,
+        "dns_rejected": 847431
+      },
+      "within_file_duplicate_excess": 141289,
+      "global_duplicate_excess_attributed_to_file": 141289
+    },
+    {
+      "file": "Network_dataset_23.csv",
+      "source_path": "Raw_DATASET/Network_dataset_23.csv",
+      "rows": 339021,
+      "sha256": "e89c54673961c2b260265cdd3f6c50355369f8a80e63c31999df04b0a757f213",
+      "invalid_src_bytes": 4,
+      "label_distribution": {
+        "1": 305546,
+        "0": 33475
+      },
+      "type_distribution": {
+        "backdoor": 304494,
+        "normal": 33475,
+        "mitm": 1052
+      },
+      "missing_numeric": {
+        "src_port": 0,
+        "dst_port": 0,
+        "duration": 0,
+        "src_bytes": 4,
+        "dst_bytes": 0,
+        "missed_bytes": 0,
+        "src_pkts": 0,
+        "src_ip_bytes": 0,
+        "dst_pkts": 0,
+        "dst_ip_bytes": 0,
+        "http_request_body_len": 0,
+        "http_response_body_len": 0
+      },
+      "missing_categorical": {
+        "proto": 0,
+        "service": 319576,
+        "conn_state": 0,
+        "dns_qclass": 0,
+        "dns_qtype": 0,
+        "dns_rcode": 0,
+        "http_status_code": 0
+      },
+      "missing_boolean": {
+        "dns_AA": 327910,
+        "dns_RD": 327910,
+        "dns_RA": 327910,
+        "dns_rejected": 327910
+      },
+      "within_file_duplicate_excess": 2717,
+      "global_duplicate_excess_attributed_to_file": 2717
+    }
+  ],
+  "total_fitted_rows": 22339021,
+  "duplicates": {
+    "definition": "Exact equality of all 46 parsed raw string fields, before cleaning, including targets/ts/IPs; CSV quoting differences ignored, whitespace preserved. Full JSON row keys in SQLite avoid hash collisions.",
+    "duplicate_excess_rows": 1791971,
+    "duplicate_percentage": 8.021707844761863,
+    "unique_raw_records": 20547050,
+    "rows_in_duplicate_groups": 2344017,
+    "cross_file_duplicate_groups": 62,
+    "rows_in_cross_file_groups": 358,
+    "duplicate_excess_by_type": {
+      "backdoor": 2731,
+      "ddos": 82115,
+      "dos": 1559419,
+      "injection": 0,
+      "mitm": 9,
+      "normal": 107103,
+      "password": 0,
+      "ransomware": 40591,
+      "scanning": 3,
+      "xss": 0
+    },
+    "by_file_note": "Within-file excess counts local repeats; global excess is attributed to later occurrences in supplied file order. Cross-file group rows include all occurrences.",
+    "removed_rows": 0,
+    "retained": true
+  },
+  "invalid_src_bytes_count": 869
+}
