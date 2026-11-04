@@ -1,5 +1,5 @@
 
-This repository contains one preprocessing pipeline. `main.py` runs the shared Zainab transformation across datasets 1-23.
+This repository contains one preprocessing pipeline. `main.py` runs the transformation across datasets.
 
 ## Folders and files
 
