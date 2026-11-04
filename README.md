@@ -1,4 +1,3 @@
-# Zainab preprocessing pipeline
 
 This repository contains one preprocessing pipeline. `main.py` runs the shared Zainab transformation across datasets 1-23.
 
