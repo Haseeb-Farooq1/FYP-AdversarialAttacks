@@ -1,0 +1,133 @@
+{
+  "model": "StandardScaler + LogisticRegression(class_weight='balanced')",
+  "target": "label",
+  "excluded_columns": [
+    "type"
+  ],
+  "test_size": 0.2,
+  "random_state": 42,
+  "max_rows_per_file": 200000,
+  "selection_rule": "highest F1, then recall, then precision",
+  "recommended_pipeline": "PreProcessed_3",
+  "results": [
+    {
+      "pipeline": "PreProcessed_1",
+      "file": "PreProcessed_1.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 200000
+      },
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "status": "skipped: only one target class is available",
+      "elapsed_seconds": 6.467
+    },
+    {
+      "pipeline": "PreProcessed_2",
+      "file": "PreProcessed_2.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 66,
+        "1": 199934
+      },
+      "precision": 0.999975,
+      "recall": 0.998625,
+      "f1": 0.999299,
+      "status": "evaluated",
+      "elapsed_seconds": 11.876
+    },
+    {
+      "pipeline": "PreProcessed_3",
+      "file": "PreProcessed_3.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 461,
+        "1": 199539
+      },
+      "precision": 0.999975,
+      "recall": 1.0,
+      "f1": 0.999987,
+      "status": "evaluated",
+      "elapsed_seconds": 7.781
+    },
+    {
+      "pipeline": "PreProcessed_4",
+      "file": "PreProcessed_4.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 1650,
+        "1": 198350
+      },
+      "precision": 0.999924,
+      "recall": 0.999395,
+      "f1": 0.99966,
+      "status": "evaluated",
+      "elapsed_seconds": 8.117
+    },
+    {
+      "pipeline": "PreProcessed_5",
+      "file": "PreProcessed_5.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 608,
+        "1": 199392
+      },
+      "precision": 0.99995,
+      "recall": 0.998295,
+      "f1": 0.999122,
+      "status": "evaluated",
+      "elapsed_seconds": 13.146
+    },
+    {
+      "pipeline": "PreProcessed_6",
+      "file": "PreProcessed_6.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 1104,
+        "1": 198896
+      },
+      "precision": 1.0,
+      "recall": 0.994972,
+      "f1": 0.99748,
+      "status": "evaluated",
+      "elapsed_seconds": 8.337
+    },
+    {
+      "pipeline": "PreProcessed_7",
+      "file": "PreProcessed_7.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 4607,
+        "1": 195393
+      },
+      "precision": 0.999795,
+      "recall": 0.997518,
+      "f1": 0.998655,
+      "status": "evaluated",
+      "elapsed_seconds": 7.44
+    },
+    {
+      "pipeline": "PreProcessed_8",
+      "file": "PreProcessed_8.csv",
+      "rows_evaluated": 200000,
+      "rows_read": 200000,
+      "class_counts": {
+        "0": 764,
+        "1": 199236
+      },
+      "precision": 0.999741,
+      "recall": 0.968906,
+      "f1": 0.984082,
+      "status": "evaluated",
+      "elapsed_seconds": 8.284
+    }
+  ]
+}

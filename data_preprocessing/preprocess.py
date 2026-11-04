@@ -205,8 +205,19 @@ def preprocess_datasets(input_paths, output_dir=None):
             "datasets_processed": len(input_paths),
             "processing_time_seconds": elapsed_seconds,
             "processing_time_minutes": round(elapsed_seconds / 60, 2),
+            "total_rows_before": sum(dataset_stats[path.name]["before_rows"] for path in input_paths),
+            "total_rows_after": sum(dataset_stats[path.name]["after_rows"] for path in input_paths),
             "rows_per_dataset": dataset_stats[input_paths[0].name]["after_rows"],
+            "input_columns": len(columns),
             "output_columns": len(output_columns),
+            "features_before": len(
+                [
+                    column
+                    for column in columns
+                    if column not in TARGET_COLUMNS and column not in IGNORED_COLUMNS
+                ]
+            ),
+            "features_after": len(output_columns) - len(TARGET_COLUMNS.intersection(output_columns)),
             "numeric_features": len(numeric_columns),
             "categorical_features": len(categorical_columns),
             "missing_indicators_added": len(
@@ -218,14 +229,35 @@ def preprocess_datasets(input_paths, output_dir=None):
         "datasets": [
             {
                 "dataset": index,
+                "input_file": path.name,
+                "output_file": dataset_stats[path.name]["output_file"],
+                "rows_before": dataset_stats[path.name]["before_rows"],
+                "rows_after": dataset_stats[path.name]["after_rows"],
                 "input_columns": dataset_stats[path.name]["before_columns"],
                 "output_columns": dataset_stats[path.name]["after_columns"],
+                "features_before": dataset_stats[path.name]["before_columns"]
+                - len(TARGET_COLUMNS.intersection(columns))
+                - len(IGNORED_COLUMNS.intersection(columns)),
+                "features_after": dataset_stats[path.name]["after_columns"]
+                - len(TARGET_COLUMNS.intersection(output_columns)),
                 "missing_values": dataset_stats[path.name]["before_missing_values"],
+                "non_empty_columns": dataset_stats[path.name]["before_non_empty_columns"],
                 "output_size_mb": round(dataset_stats[path.name]["output_size_bytes"] / (1024 * 1024), 2),
                 "rows_removed": dataset_stats[path.name]["rows_removed"],
+                "columns_removed": dataset_stats[path.name]["columns_removed"],
+                "columns_added": dataset_stats[path.name]["columns_added"],
             }
             for index, path in enumerate(input_paths, start=1)
         ],
+        "transformation": {
+            "missing_values_normalized": sorted(MISSING_VALUES),
+            "numeric_features_standardized": sorted(numeric_columns),
+            "categorical_features_hashed": sorted(categorical_columns),
+            "missing_indicators_added": True,
+            "target_columns_preserved": sorted(TARGET_COLUMNS.intersection(columns)),
+            "ignored_columns_removed": sorted(IGNORED_COLUMNS.intersection(columns)),
+            "hash_buckets": HASH_BUCKETS,
+        },
     }
     report_path = output_dir / "preprocessing_report.json"
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -234,27 +266,7 @@ def preprocess_datasets(input_paths, output_dir=None):
 
 
 def compact_report(report_path):
-    """Replace a detailed report with a short dataset and runtime summary."""
+    """Keep the detailed report unchanged for backward-compatible callers."""
     report_path = Path(report_path)
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    compact = {
-        "total_runtime_seconds": report["runtime_seconds"],
-        "datasets": [],
-    }
-
-    for name, dataset in report["datasets"].items():
-        compact["datasets"].append(
-            {
-                "dataset": name,
-                "output": dataset["output_file"],
-                "rows_before": dataset["before_rows"],
-                "rows_after": dataset["after_rows"],
-                "features_before": dataset["before_columns"]
-                - (1 if name == "Network_dataset_6.csv" else 0)
-                - len(TARGET_COLUMNS),
-                "features_after": dataset["after_columns"] - len(TARGET_COLUMNS),
-                "output_size_mb": round(dataset["output_size_bytes"] / (1024 * 1024), 2),
-            }
-        )
-
-    report_path.write_text(json.dumps(compact, indent=2), encoding="utf-8")
+    report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")

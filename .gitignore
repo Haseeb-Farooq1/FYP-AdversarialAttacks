@@ -4,4 +4,4 @@ Network_dataset_1.csv
 __pycache__/
 *.py[cod]
 ~$*
-
+model_evaluation/results/
