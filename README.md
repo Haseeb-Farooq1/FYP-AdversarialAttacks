@@ -1,25 +1,22 @@
-# Zainab preprocessing pipeline
+# Network intrusion detection model baseline
 
-This repository contains one preprocessing pipeline. `main.py` runs the shared Zainab transformation across datasets 1-23.
+`main.py` trains and evaluates the current LightGBM binary-classification baseline using the prepared CSVs in `pre_processed/`. The positive class is `label = 1` (attack); the textual `type` column is deliberately excluded from predictors to prevent target leakage.
 
-## Folders and files
-
-- `Raw_DATASET/`: source CSV files.
-- `pre_processed/`: one processed CSV per source file.
-- `main.py`: pipeline entry point.
-- `pre_processing/preprocess_shared.py`: shared fit and CSV export.
-- `pre_processing/preprocess.py`: schema and cleaning helpers used by the pipeline.
-- `requirements.txt`: Python dependencies.
-
-The run also writes `preprocessing_config.json`, `preprocessing_report.json`, `feature_metadata.json`, and `preprocessing_summary.md` in `pre_processing/`. The outputs keep each source basename and row count. Dataset 23 may be named `Network_dataset_23.csv` or `Network_dataset_23(in).csv`; dataset 6 may contain an extra `uid` column, which is excluded.
+For each CSV, the pipeline makes a reproducible stratified 80/20 train/holdout split, runs 5-fold stratified cross-validation on the training portion only, refits on that portion, and reports holdout metrics. It prints normal/attack counts, each fold's attack F1, per-class F1, and an always-attack F1 baseline. Metrics, trained models, and exact split row positions are saved in `model_results/`.
 
 ## Run
-
-Install dependencies into the existing environment if needed, then run from the repository root:
 
 ```powershell
 .venv/Scripts/python.exe -m pip install -r requirements.txt
 .venv/Scripts/python.exe -B main.py
 ```
 
-The preprocessor refuses to overwrite existing outputs. Move or rename the current output and report files before starting another run. This pipeline preprocesses data only; it does not train or evaluate a model.
+Optional paths can be passed to `main.py`:
+
+```powershell
+.venv/Scripts/python.exe -B main.py --data-dir pre_processed --output-dir model_results
+```
+
+The evaluation brief describes a later, model-only comparison against one frozen dataset and fixed test rows. The saved holdout indices and model artifacts are intended to support that comparison. The current prepared features were produced by the shared preprocessing pipeline, whose fitted scaling/mappings include all selected files; this baseline therefore measures model performance on those supplied prepared values and is not a leakage-free end-to-end preprocessing evaluation.
+
+`pre_processing/` contains the separate preprocessing implementation and its existing reports. `main.py` now runs only model training/evaluation.

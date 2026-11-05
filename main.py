@@ -1,10 +1,7 @@
-"""Run the Zainab shared preprocessing pipeline for raw datasets 1–23."""
+"""Train and evaluate the baseline model on prepared CSV files."""
 
-# from pre_processing.preprocess_shared import main
+from Model.pipeline import main as run_model_pipeline
 
 
 if __name__ == "__main__":
-    # Processing datasets 1-23 has already been completed.
-    # Uncomment the import above and this call only to run preprocessing again.
-    # main()
-    print("Preprocessing is disabled: the processed datasets are already in pre_processed/.")
+    run_model_pipeline()
