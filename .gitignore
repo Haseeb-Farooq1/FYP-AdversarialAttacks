@@ -5,3 +5,7 @@ __pycache__/
 *.py[cod]
 ~$*
 model_evaluation/results/
+model_results/
+*.pcap
+*.pcapng
+PCAP/
