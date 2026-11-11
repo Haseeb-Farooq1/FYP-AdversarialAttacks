@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "evaluation_status": "complete",
+  "model": {
+    "member": "Luqman",
+    "model_name": "MLP with embeddings (PyTorch), binary normal-vs-attack",
+    "version_or_commit": "6d20b8c",
+    "artifact": "model_luqman\\results\\model_fold0.pt",
+    "inference_entry_point": "nn_model.MLP.forward(xnum, xcat); nn_model.predict_proba(...)",
+    "embedded_preprocessing": "11 code-type columns are passed through learned embeddings; the 12 numeric columns are used as delivered by the shared pre-processing pipeline"
+  },
+  "dataset": {
+    "filename_or_id": "pre_processed/Network_dataset_1..23.csv (shared pre-processing pipeline), pooled",
+    "version_or_hash": "sha256 of row fingerprints (cache/h.npy), first 16 chars: 5f4d9555fd0eb1ec",
+    "rows_evaluated": 22339021,
+    "feature_count": 23,
+    "feature_order_or_schema": "src_port, dst_port, proto, service, duration, src_bytes, dst_bytes, conn_state, missed_bytes, src_pkts, src_ip_bytes, dst_pkts, dst_ip_bytes, dns_qclass, dns_qtype, dns_rcode, dns_AA, dns_RD, dns_RA, dns_rejected, http_request_body_len, http_response_body_len, http_status_code",
+    "target_column": "label",
+    "label_mapping_and_order": [
+      "0 = normal",
+      "1 = attack"
+    ],
+    "positive_class": "1 (attack)",
+    "fixed_test_split_id": "5-fold, duplicate-safe, stratified by attack type, seed 42, fold fingerprint f685e73660f2e42d; metrics pooled over the 5 held-out folds"
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "runtime_and_version": "Python 3.13.2",
+    "framework_and_version": "PyTorch 2.15.0+cpu (CPU build), NumPy 2.5.3",
+    "device": "CPU: AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD",
+    "hardware_notes": "AMD Ryzen 7 4700U, 8 logical processors, 7.4 GB RAM, AMD Radeon integrated graphics (not used), laptop on mains power"
+  },
+  "performance": {
+    "accuracy": 0.9902619725367553,
+    "precision": {
+      "positive_class": 0.9996566502608254,
+      "macro": 0.8946454105052486,
+      "weighted": 0.9921694062033041
+    },
+    "recall": {
+      "positive_class": 0.9902420970576449,
+      "macro": 0.9905208576651644,
+      "weighted": 0.9902619725367553
+    },
+    "f1": {
+      "positive_class": 0.9949271027240594,
+      "macro": 0.9368897405175638,
+      "weighted": 0.9907890704876413
+    },
+    "roc_auc": {
+      "value": 0.9993015720176205,
+      "averaging": "binary, attack as positive class",
+      "score_source": "sigmoid of the network output, pooled out-of-fold"
+    },
+    "pr_auc": {
+      "value": 0.9999725885704884,
+      "averaging": "binary, attack as positive class",
+      "score_source": "sigmoid of the network output, pooled out-of-fold"
+    },
+    "per_class": [
+      {
+        "label": "0 (normal)",
+        "precision": 0.7896341707496718,
+        "recall": 0.9907996182726839,
+        "f1": 0.8788523783110683,
+        "support": 796380
+      },
+      {
+        "label": "1 (attack)",
+        "precision": 0.9996566502608254,
+        "recall": 0.9902420970576449,
+        "f1": 0.9949271027240594,
+        "support": 21542641
+      }
+    ],
+    "confusion_matrix": {
+      "labels_in_order": [
+        0,
+        1
+      ],
+      "matrix": [
+        [
+          789053,
+          7327
+        ],
+        [
+          210211,
+          21332430
+        ]
+      ]
+    }
+  },
+  "timing": {
+    "model_load_seconds": 0.0032018000056268647,
+    "training_seconds": 1985.5557932853699,
+    "inference": {
+      "warmup_passes": 5,
+      "timed_passes": 10,
+      "batch_size": 8192,
+      "mean_latency_ms_per_example": 0.0008645831500107305,
+      "p50_latency_ms_per_example": 0.000858181749972573,
+      "p95_latency_ms_per_example": 0.0009430363500359817,
+      "throughput_examples_per_second": 1156626.7512703533,
+      "measurement_notes": "Fixed set of 200,000 rows (first rows of fold 0's held-out part, not the full test set). Latency per example = pass time / rows; mean, p50 and p95 are taken over the 10 timed passes. Data already in memory. training_seconds is the sum of 5 fold trainings."
+    }
+  },
+  "complexity": {
+    "parameter_count": 17132,
+    "model_file_size_bytes": 74636,
+    "architecture": "11 embedding tables + concat with 12 numeric inputs -> Linear 128 -> ReLU -> Linear 64 -> ReLU -> Linear 1",
+    "architecture_counts": {
+      "embedding_tables": 11,
+      "embedding_parameters": 747,
+      "linear_layers": 3,
+      "hidden_units": [
+        128,
+        64
+      ]
+    },
+    "peak_inference_memory_bytes": null,
+    "memory_measurement_method": null
+  },
+  "limitations_or_failure_reason": [
+    "The shared pre-processing was fitted on all 23 files, including rows that are test rows here; a final evaluation should split first and refit on training rows only.",
+    "Folds keep rows with identical predictor values together, but similar (not identical) flows from the same attack session can still sit in different folds.",
+    "The data is stored sorted by attack type and some types are rare (mitm: 1,052 rows), so per-type results are noisy.",
+    "A fixed decision threshold of 0.5 was used; no tuning.",
+    "Inference timing used a fixed subset, not the full test set; peak memory was not measured.",
+    "This measures clean accuracy, not adversarial robustness."
+  ],
+  "notes": [
+    "epochs per fold: 5",
+    "commit: 6d20b8c",
+    "Metrics are pooled over the 5 held-out folds, so every row is predicted exactly once."
+  ]
+}
