@@ -24,18 +24,22 @@ from pre_processing.preprocess import (
 
 
 RAW_DATA_DIR = PROJECT_ROOT / "Raw_DATASET"
+RAW_DATA2_DIR = PROJECT_ROOT / "Raw_DATASET2"
 DATA_SPLIT_DIR = PROJECT_ROOT / "data_split"
 SPLIT_NAMES = ("train", "validation", "test")
 SEED = 42
-CHUNK_SIZE = 50_000
+CHUNK_SIZE = 200_000
 PORT_COLUMNS = {"src_port", "dst_port"}
 LOG_COLUMNS = [column for column in NUMERICAL_COLUMNS if column not in PORT_COLUMNS]
 NF_TARGET_COLUMNS = {"Label", "Attack"}
-NF_EXCLUDED_COLUMNS = {"IPV4_SRC_ADDR", "IPV4_DST_ADDR", "Label", "Attack"}
+NF_EXCLUDED_COLUMNS = {
+    "IPV4_SRC_ADDR", "IPV4_DST_ADDR", "FLOW_START_MILLISECONDS",
+    "FLOW_END_MILLISECONDS", "Label", "Attack",
+}
 
 
 def read_chunks(path: Path, columns=None):
-    columns = columns or FEATURE_COLUMNS + ["label", "type"]
+    columns = columns or FEATURE_COLUMNS + ["label", "type", "ts"]
     with pd.read_csv(
         path,
         usecols=columns,
@@ -192,17 +196,31 @@ class SharedPreprocessor:
         return output
 
 
-def write_processed(paths: list[Path], output_dir: Path, processor: SharedPreprocessor) -> None:
+def write_processed(
+    paths: list[Path], output_dir: Path, processor: SharedPreprocessor,
+    lower_time: int | None = None, upper_time: int | None = None,
+) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     for path in paths:
         output = output_dir / path.name
         rows_written = 0
         for chunk in read_chunks(path):
+            time_values = pd.to_numeric(chunk["ts"], errors="raise")
+            keep = pd.Series(True, index=chunk.index)
+            if lower_time is not None:
+                keep &= time_values > lower_time
+            if upper_time is not None:
+                keep &= time_values <= upper_time
+            if not keep.any():
+                continue
+            chunk = chunk.loc[keep]
             clean = clean_checked(chunk, path.name)
             labels, types = validate_targets(chunk)
             transformed = processor.transform(clean)
             transformed["label"] = labels.to_numpy()
             transformed["type"] = types.to_numpy()
+            # Kept only as split/CV metadata. Model loading always drops this.
+            transformed["__time"] = time_values.loc[keep].to_numpy()
             transformed.to_csv(
                 output, index=False, mode="a" if rows_written else "w",
                 header=rows_written == 0,
@@ -224,18 +242,14 @@ def run_nf_unsw_pipeline(path: Path, output_dir: Path) -> Path:
     targets = pd.read_csv(path, usecols=["Label"], dtype={"Label": "int8"})["Label"]
     if not targets.isin([0, 1]).all():
         raise ValueError(f"{path.name}: Label must contain only 0 and 1")
-    rows = np.arange(len(targets))
-    train_rows, remaining_rows = train_test_split(
-        rows, test_size=0.30, random_state=SEED, stratify=targets
-    )
-    validation_rows, test_rows = train_test_split(
-        remaining_rows, test_size=0.50, random_state=SEED,
-        stratify=targets.iloc[remaining_rows],
-    )
-    assignments = np.full(len(targets), -1, dtype=np.int8)
-    assignments[train_rows] = 0
-    assignments[validation_rows] = 1
-    assignments[test_rows] = 2
+    # Split on flow time so later traffic is held out. Equal timestamps stay
+    # together at boundaries, even if that makes the proportions approximate.
+    start_times = pd.read_csv(
+        path, usecols=["FLOW_START_MILLISECONDS"], dtype="int64"
+    )["FLOW_START_MILLISECONDS"].to_numpy()
+    first_cut, second_cut = np.quantile(start_times, [0.70, 0.85])
+    assignments = np.where(start_times <= first_cut, 0,
+                           np.where(start_times <= second_cut, 1, 2)).astype(np.int8)
 
     with tempfile.TemporaryDirectory(prefix=".nf-pipeline-stage-", dir=PROJECT_ROOT) as temp_name:
         stage = Path(temp_name) / "data_split"
@@ -247,7 +261,7 @@ def run_nf_unsw_pipeline(path: Path, output_dir: Path) -> Path:
 
         counts = {split: 0 for split in SPLIT_NAMES}
         offset = 0
-        usecols = feature_columns + ["Label", "Attack"]
+        usecols = feature_columns + ["Label", "Attack", "FLOW_START_MILLISECONDS"]
         with pd.read_csv(path, usecols=usecols, chunksize=CHUNK_SIZE,
                          na_filter=False, on_bad_lines="error") as reader:
             for chunk in reader:
@@ -258,6 +272,9 @@ def run_nf_unsw_pipeline(path: Path, output_dir: Path) -> Path:
                 prepared = features
                 prepared["label"] = chunk["Label"].astype("int8").to_numpy()
                 prepared["type"] = chunk["Attack"].astype("string").str.strip().to_numpy()
+                prepared["__time"] = pd.to_numeric(
+                    chunk["FLOW_START_MILLISECONDS"], errors="raise"
+                ).to_numpy()
                 for split_index, split in enumerate(SPLIT_NAMES):
                     selected = prepared.loc[chunk_assignments == split_index]
                     if not selected.empty:
@@ -289,6 +306,67 @@ def run_nf_unsw_pipeline(path: Path, output_dir: Path) -> Path:
     return output_dir
 
 
+def run_zeek_pipeline(raw_paths: list[Path], output_dir: Path) -> Path:
+    """Prepare Zeek files as chronological source-file groups."""
+    raw_paths = sorted(raw_paths, key=lambda path: int(path.stem.rsplit("_", 1)[-1]))
+    # These files are consecutive time chunks. Keep whole files in one split,
+    # so a chunk cannot contribute related records to both train and test.
+    n = len(raw_paths)
+    train_end = max(1, int(n * 0.70))
+    validation_end = max(train_end + 1, int(n * 0.85))
+    validation_end = min(validation_end, n - 1)
+    paths_by_split = {
+        "train": raw_paths[:train_end],
+        "validation": raw_paths[train_end:validation_end],
+        "test": raw_paths[validation_end:],
+    }
+    if not paths_by_split["validation"] or not paths_by_split["test"]:
+        raise ValueError("Raw_DATASET2 needs at least three chronological source files")
+
+    # Keep equal timestamps on the earlier side of each boundary. Exact
+    # duplicate records necessarily share ts, so they cannot straddle splits.
+    first_boundary = int(pd.read_csv(
+        paths_by_split["train"][-1], usecols=["ts"], dtype={"ts": "int64"}
+    )["ts"].max())
+    second_boundary = int(pd.read_csv(
+        paths_by_split["validation"][-1], usecols=["ts"], dtype={"ts": "int64"}
+    )["ts"].max())
+    split_paths = {
+        "train": raw_paths[:train_end + 1],
+        "validation": raw_paths[train_end:validation_end + 1],
+        "test": raw_paths[validation_end:],
+    }
+
+    output_dir = Path(output_dir)
+    with tempfile.TemporaryDirectory(prefix=".zeek-pipeline-", dir=PROJECT_ROOT) as temp_name:
+        stage = Path(temp_name) / "data_split"
+        processor = SharedPreprocessor()
+        with tempfile.TemporaryDirectory(prefix=".fit-work-", dir=temp_name) as work_name:
+            processor.fit(paths_by_split["train"], Path(work_name))
+        for split_name, paths in split_paths.items():
+            print(f"[preprocess] transforming {split_name} source files", flush=True)
+            lower, upper = {
+                "train": (None, first_boundary),
+                "validation": (first_boundary, second_boundary),
+                "test": (second_boundary, None),
+            }[split_name]
+            write_processed(paths, stage / split_name, processor, lower, upper)
+
+        backup = Path(temp_name) / "previous_data_split"
+        moved_old = False
+        if output_dir.exists():
+            os.replace(output_dir, backup)
+            moved_old = True
+        try:
+            os.replace(stage, output_dir)
+        except Exception:
+            if moved_old and backup.exists():
+                os.replace(backup, output_dir)
+            raise
+    print(f"[pipeline] prepared Raw_DATASET2 in {output_dir}", flush=True)
+    return output_dir
+
+
 def run_pipeline(raw_dir: Path = RAW_DATA_DIR, output_dir: Path = DATA_SPLIT_DIR) -> Path:
     raw_paths = sorted(Path(raw_dir).glob("*.csv"), key=lambda path: path.name.casefold())
     if not raw_paths:
@@ -300,6 +378,8 @@ def run_pipeline(raw_dir: Path = RAW_DATA_DIR, output_dir: Path = DATA_SPLIT_DIR
         if len(raw_paths) != 1:
             raise ValueError("NF-UNSW-NB15 mode expects one raw CSV file")
         return run_nf_unsw_pipeline(raw_paths[0], Path(output_dir))
+    if {"ts", "label", "type"}.issubset(first_columns):
+        return run_zeek_pipeline(raw_paths, Path(output_dir))
 
     output_dir = Path(output_dir)
     with tempfile.TemporaryDirectory(prefix=".pipeline-stage-", dir=PROJECT_ROOT) as temp_name:
