@@ -1,0 +1,58 @@
+{
+  "data": "ToN_IoT validation candidates only",
+  "model": "Chronological train+validation MLP",
+  "attack": "Constrained numeric PGD pilot",
+  "config": {
+    "steps": 20,
+    "alpha": 0.05,
+    "epsilon_shared_prepared_units": 0.1,
+    "threshold": 0.5,
+    "direct_features": [
+      "src_port",
+      "dst_port",
+      "duration",
+      "src_bytes",
+      "src_pkts",
+      "src_ip_bytes"
+    ],
+    "dns_and_http_fields": "locked in this pilot"
+  },
+  "selected_correctly_detected_attacks": 800,
+  "evasion_successes": 14,
+  "evasion_success_rate": 0.0175,
+  "attack_recall_before_on_selected": 1.0,
+  "attack_recall_after_on_selected": 0.9825,
+  "mean_original_score": 0.9873120188713074,
+  "mean_adversarial_score": 0.9703400135040283,
+  "mean_direct_features_changed": 3.735,
+  "dependency_eligible_rows": 316,
+  "canonical_prepared_value_max_shift": 0.0,
+  "canonical_model_score_max_shift": 0.0,
+  "constraint_violations": {
+    "negative_value_violations": 0,
+    "range_violations": 0,
+    "integer_violations": 0,
+    "locked_feature_violations": 0,
+    "byte_lock_violations": 0,
+    "dependency_violations": 0,
+    "destination_port_rule_violations": 0,
+    "total": 0
+  },
+  "per_type": {
+    "ddos": {
+      "selected": 400,
+      "evasion_successes": 1,
+      "evasion_success_rate": 0.0025,
+      "mean_original_score": 0.9986752867698669,
+      "mean_adversarial_score": 0.9922705292701721
+    },
+    "password": {
+      "selected": 400,
+      "evasion_successes": 13,
+      "evasion_success_rate": 0.0325,
+      "mean_original_score": 0.9759488105773926,
+      "mean_adversarial_score": 0.9484095573425293
+    }
+  },
+  "interpretation_limit": "Denominator is correctly detected validation attacks only. This is a pipeline pilot, not held-out test performance."
+}

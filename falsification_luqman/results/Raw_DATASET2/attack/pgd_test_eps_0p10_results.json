@@ -1,0 +1,79 @@
+{
+  "data": "ToN_IoT held-out test candidates only",
+  "model": "Chronological train+validation MLP",
+  "attack": "Constrained numeric PGD held-out evaluation",
+  "config": {
+    "steps": 20,
+    "alpha": 0.05,
+    "epsilon_shared_prepared_units": 0.1,
+    "threshold": 0.5,
+    "direct_features": [
+      "src_port",
+      "dst_port",
+      "duration",
+      "src_bytes",
+      "src_pkts",
+      "src_ip_bytes"
+    ],
+    "dns_and_http_fields": "locked in this pilot"
+  },
+  "selected_correctly_detected_attacks": 2000,
+  "evasion_successes": 197,
+  "evasion_success_rate": 0.0985,
+  "attack_recall_before_on_selected": 1.0,
+  "attack_recall_after_on_selected": 0.9015,
+  "mean_original_score": 0.9161601662635803,
+  "mean_adversarial_score": 0.8504071831703186,
+  "mean_direct_features_changed": 3.794,
+  "dependency_eligible_rows": 1035,
+  "canonical_prepared_value_max_shift": 0.0,
+  "canonical_model_score_max_shift": 0.0,
+  "constraint_violations": {
+    "negative_value_violations": 0,
+    "range_violations": 0,
+    "integer_violations": 0,
+    "locked_feature_violations": 0,
+    "byte_lock_violations": 0,
+    "dependency_violations": 0,
+    "destination_port_rule_violations": 0,
+    "total": 0
+  },
+  "per_type": {
+    "backdoor": {
+      "selected": 400,
+      "evasion_successes": 0,
+      "evasion_success_rate": 0.0,
+      "mean_original_score": 0.9877485036849976,
+      "mean_adversarial_score": 0.9420382976531982
+    },
+    "mitm": {
+      "selected": 400,
+      "evasion_successes": 114,
+      "evasion_success_rate": 0.285,
+      "mean_original_score": 0.7980307936668396,
+      "mean_adversarial_score": 0.6564164161682129
+    },
+    "password": {
+      "selected": 400,
+      "evasion_successes": 8,
+      "evasion_success_rate": 0.02,
+      "mean_original_score": 0.9830864071846008,
+      "mean_adversarial_score": 0.9548948407173157
+    },
+    "ransomware": {
+      "selected": 400,
+      "evasion_successes": 11,
+      "evasion_success_rate": 0.0275,
+      "mean_original_score": 0.8999391794204712,
+      "mean_adversarial_score": 0.8715568780899048
+    },
+    "xss": {
+      "selected": 400,
+      "evasion_successes": 64,
+      "evasion_success_rate": 0.16,
+      "mean_original_score": 0.9119960069656372,
+      "mean_adversarial_score": 0.8271295428276062
+    }
+  },
+  "interpretation_limit": "Denominator is correctly detected held-out test attacks only. All three attack configurations were frozen using validation data before this evaluation."
+}
