@@ -1,0 +1,161 @@
+{
+  "config": {
+    "epochs": 5,
+    "batch": 8192,
+    "lr": 0.001,
+    "seed": 42
+  },
+  "cv_folds": [
+    {
+      "accuracy": 0.9995905292680982,
+      "balanced_accuracy": 0.9995905292680982,
+      "macro_f1": 0.49989761135444777,
+      "confusion_matrix": [
+        [
+          275853,
+          113
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "per_type_share_correct": {
+        "Benign": 0.9995905292680982
+      },
+      "roc_auc": null,
+      "pr_auc": null,
+      "note": "single-class evaluation window, roc_auc/pr_auc undefined"
+    },
+    {
+      "accuracy": 0.9995144329373908,
+      "balanced_accuracy": 0.9995144329373908,
+      "macro_f1": 0.49987857875526914,
+      "confusion_matrix": [
+        [
+          275832,
+          134
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "per_type_share_correct": {
+        "Benign": 0.9995144329373908
+      },
+      "roc_auc": null,
+      "pr_auc": null,
+      "note": "single-class evaluation window, roc_auc/pr_auc undefined"
+    },
+    {
+      "accuracy": 0.9998985382257235,
+      "balanced_accuracy": 0.9998985382257235,
+      "macro_f1": 0.4999746332695541,
+      "confusion_matrix": [
+        [
+          275938,
+          28
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "per_type_share_correct": {
+        "Benign": 0.9998985382257235
+      },
+      "roc_auc": null,
+      "pr_auc": null,
+      "note": "single-class evaluation window, roc_auc/pr_auc undefined"
+    },
+    {
+      "accuracy": 0.9993441221019981,
+      "balanced_accuracy": 0.9994628310337863,
+      "macro_f1": 0.9978424249903545,
+      "confusion_matrix": [
+        [
+          253008,
+          172
+        ],
+        [
+          9,
+          22777
+        ]
+      ],
+      "per_type_share_correct": {
+        "Analysis": 1.0,
+        "Backdoor": 0.9990439770554493,
+        "Benign": 0.9993206414408721,
+        "DoS": 0.998989898989899,
+        "Exploits": 0.999389964922983,
+        "Fuzzers": 1.0,
+        "Generic": 0.9996706192358367,
+        "Reconnaissance": 1.0,
+        "Shellcode": 1.0,
+        "Worms": 1.0
+      },
+      "roc_auc": 0.9998779539009695,
+      "pr_auc": 0.9980437176619597
+    },
+    {
+      "accuracy": 0.9994021002587276,
+      "balanced_accuracy": 0.9995449591281416,
+      "macro_f1": 0.9981867125806467,
+      "confusion_matrix": [
+        [
+          250867,
+          158
+        ],
+        [
+          7,
+          24934
+        ]
+      ],
+      "per_type_share_correct": {
+        "Analysis": 1.0,
+        "Backdoor": 1.0,
+        "Benign": 0.9993705806194602,
+        "DoS": 1.0,
+        "Exploits": 0.9994586987117029,
+        "Fuzzers": 0.9998415465061005,
+        "Generic": 1.0,
+        "Reconnaissance": 0.9996931574102486,
+        "Shellcode": 1.0,
+        "Worms": 1.0
+      },
+      "roc_auc": 0.9998690248694119,
+      "pr_auc": 0.9977317239426535
+    }
+  ],
+  "cv_mean_balanced_accuracy": 0.9996022581186281,
+  "test": {
+    "accuracy": 0.9996533394961867,
+    "balanced_accuracy": 0.9996356660257364,
+    "macro_f1": 0.998918039196656,
+    "confusion_matrix": [
+      [
+        323596,
+        111
+      ],
+      [
+        12,
+        31095
+      ]
+    ],
+    "per_type_share_correct": {
+      "Analysis": 1.0,
+      "Backdoor": 1.0,
+      "Benign": 0.9996570973133111,
+      "DoS": 0.9991896272285251,
+      "Exploits": 0.9989828941285251,
+      "Fuzzers": 1.0,
+      "Generic": 1.0,
+      "Reconnaissance": 1.0,
+      "Shellcode": 1.0,
+      "Worms": 1.0
+    },
+    "roc_auc": 0.9999410954029666,
+    "pr_auc": 0.9987868315365509
+  }
+}
